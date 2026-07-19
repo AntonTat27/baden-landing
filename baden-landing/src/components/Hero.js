@@ -1,70 +1,99 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import heroImg from '../assets/images/hero.jpg';
+import poolImg from '../assets/images/showcase-pool.jpg';
+import groundsImg from '../assets/images/showcase-grounds.jpg';
+import conciergeImg from '../assets/images/showcase-concierge.jpg';
 import { positionFor } from '../assets/imagePositions';
 import { useLanguage } from '../context/LanguageContext';
 
-// SIGNATURE INTERACTION — Day/Dusk grade toggle.
-// PLACEHOLDER APPROXIMATION: the client has not yet supplied a real dusk-lit
-// render of the property. Until that exists, the "dusk" state is approximated
-// with CSS filters (brightness/saturate/sepia) and a warm-dark overlay wash
-// rather than a second photograph. Swap in a true dusk render when available
-// and this component only needs its `duskAmount` mapping adjusted, not rebuilt.
-//
-// Both the filter grade AND the overlay are tuned to stay in the warm
-// "golden hour" range across the whole 0–100 slider, not just at the dusk
-// end — the source photo's blue sky gets pulled warm at every point.
+const ROTATE_MS = 7000;
+
+// Hero doubles as the residence showcase: the backdrop slowly rotates through
+// the property themes while the brand headline stays fixed. The former
+// standalone Showcase section is gone — this removes the awkward full-image →
+// full-image scroll and shortens the page.
+const SLIDES = [
+  {
+    key: 'overview',
+    image: heroImg,
+    ru: { label: 'Резиденция', line: null },
+    en: { label: 'The residence', line: null },
+  },
+  {
+    key: 'pool',
+    image: poolImg,
+    ru: { label: 'Пляж и бассейн', line: 'Тень парусных навесов и вода — в двух шагах от двери.' },
+    en: { label: 'Beach & pool', line: 'Sail-shaped shade and water, two steps from your door.' },
+  },
+  {
+    key: 'grounds',
+    image: groundsImg,
+    ru: { label: 'Территория', line: 'Пальмы, тихие дорожки и пространство между домами.' },
+    en: { label: 'Grounds', line: 'Palms, quiet paths, and room to breathe between residences.' },
+  },
+  {
+    key: 'concierge',
+    image: conciergeImg,
+    ru: { label: 'Сервис', line: 'От трансфера до уборки — резиденция заботится о деталях.' },
+    en: { label: 'Service', line: 'From transfers to housekeeping, the residence handles the details.' },
+  },
+];
+
+// Corner frame mark — a thin editorial bracket, no fill, no color.
+function CornerMark({ className }) {
+  return (
+    <svg
+      aria-hidden
+      viewBox="0 0 32 32"
+      className={`absolute h-6 w-6 md:h-8 md:w-8 text-baden-cream/40 ${className}`}
+    >
+      <path d="M1 12V1H12" stroke="currentColor" strokeWidth="1" fill="none" />
+    </svg>
+  );
+}
+
 export default function Hero() {
   const { isRu } = useLanguage();
-  // 0 = day grade, 100 = dusk grade. Defaults to dusk to match the dark palette.
-  const [dusk, setDusk] = useState(100);
-  const t = dusk / 100;
+  const [active, setActive] = useState(0);
+  const [paused, setPaused] = useState(false);
+  const slide = SLIDES[active];
 
-  const imgFilter = {
-    objectPosition: positionFor(heroImg),
-    filter: `brightness(${1.08 - t * 0.48}) saturate(${0.92 - t * 0.22}) sepia(0.14) contrast(${1.02 + t * 0.08})`,
-    transition: 'filter 700ms ease',
-  };
-  // Full-frame wash: present at meaningful opacity everywhere in the frame
-  // (not bottom-weighted only), so sky/cool tones get color-corrected warm
-  // across the whole image, at both ends of the day/dusk slider.
-  const washOpacity = { opacity: 0.52 + t * 0.2, transition: 'opacity 700ms ease' };
-  const bottomOpacity = { opacity: 0.55 + t * 0.25, transition: 'opacity 700ms ease' };
+  useEffect(() => {
+    if (paused) return;
+    const t = setTimeout(() => setActive((a) => (a + 1) % SLIDES.length), ROTATE_MS);
+    return () => clearTimeout(t);
+  }, [active, paused]);
 
   return (
     <section className="relative h-[100svh] min-h-[560px] w-full overflow-hidden bg-baden-base">
-      <img
-        src={heroImg}
-        alt="Baden Premium Projects — exterior view"
-        className="absolute inset-0 h-full w-full object-cover"
-        style={imgFilter}
-      />
+      {/* Crossfading backdrops */}
+      {SLIDES.map((s, i) => (
+        <img
+          key={s.key}
+          src={s.image}
+          alt={i === 0 ? 'Baden Premium Projects — exterior view' : ''}
+          className="absolute inset-0 h-full w-full object-cover transition-opacity duration-[1200ms] ease-out"
+          style={{ objectPosition: positionFor(s.image), opacity: i === active ? 1 : 0 }}
+          aria-hidden={i !== active}
+        />
+      ))}
 
-      {/* Uniform warm wash covering the ENTIRE frame, top to bottom — this is
-          the fix for the old bug where the wash faded to ~10% near the top
-          and let raw blue sky show through where the crop bug exposed sky. */}
-      <div className="absolute inset-0 bg-baden-base" style={washOpacity} aria-hidden />
-      {/* Gold undertone across the whole frame for the golden-hour cast */}
-      <div className="absolute inset-0 bg-baden-gold/10 mix-blend-multiply" aria-hidden />
-      {/* Extra bottom-weighted darkening for text legibility, layered on top
-          of (not instead of) the full-frame wash above */}
+      {/* Flat neutral dark tint — no color grading, just legibility contrast */}
+      <div className="absolute inset-0 bg-black/45" aria-hidden />
       <div
-        className="absolute inset-0 bg-gradient-to-t from-baden-base via-baden-base/35 to-transparent"
-        style={bottomOpacity}
+        className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-black/25"
         aria-hidden
       />
 
-      <div className="relative z-10 flex h-full flex-col justify-end px-6 md:px-10 pb-16 md:pb-24 max-w-7xl mx-auto">
-        <h1 className="font-display text-4xl sm:text-5xl md:text-7xl leading-[1.05] text-baden-cream max-w-3xl">
-          {isRu ? (
-            <>
-              Жизнь, которую стоит{' '}
-              <span className="font-accent italic text-baden-gold-bright">разделить</span>
-            </>
-          ) : (
-            <>
-              A life worth <span className="font-accent italic text-baden-gold-bright">sharing</span>
-            </>
-          )}
+      {/* Corner marks — purely structural framing, no copy */}
+      <CornerMark className="top-6 left-6 md:top-8 md:left-8" />
+      <CornerMark className="top-6 right-6 md:top-8 md:right-8 rotate-90" />
+      <CornerMark className="bottom-6 left-6 md:bottom-8 md:left-8 -rotate-90" />
+      <CornerMark className="bottom-6 right-6 md:bottom-8 md:right-8 rotate-180" />
+
+      <div className="relative z-10 flex h-full flex-col items-center justify-end px-6 pb-28 md:pb-36 text-center">
+        <h1 className="font-display font-medium text-4xl sm:text-5xl md:text-7xl leading-[1.05] text-baden-cream max-w-3xl">
+          {isRu ? 'Жизнь, которую стоит разделить' : 'A life worth sharing'}
         </h1>
 
         <p className="mt-6 max-w-xl text-base md:text-lg text-baden-cream/70">
@@ -73,50 +102,81 @@ export default function Hero() {
             : 'A resort residence in Turkey — own the moment, not just the square meters.'}
         </p>
 
-        <div className="mt-10 flex flex-col sm:flex-row sm:items-center gap-8">
-          <a
-            href="#showcase"
-            onClick={(e) => {
-              e.preventDefault();
-              document.getElementById('showcase')?.scrollIntoView({ behavior: 'smooth' });
-            }}
-            className="group inline-flex items-center gap-2 text-sm tracking-wide text-baden-cream w-fit"
-          >
-            <span className="border-b border-baden-gold pb-0.5 group-hover:text-baden-gold-bright group-hover:border-baden-gold-bright transition-colors duration-200">
-              {isRu ? 'Смотреть резиденцию' : 'View the residence'}
-            </span>
-            <span aria-hidden className="text-baden-gold group-hover:text-baden-gold-bright transition-colors duration-200">
-              ↓
-            </span>
-          </a>
+        <a
+          href="#listings"
+          onClick={(e) => {
+            e.preventDefault();
+            document.getElementById('listings')?.scrollIntoView({ behavior: 'smooth' });
+          }}
+          className="group mt-10 inline-flex items-center gap-2 text-sm tracking-wide text-baden-cream w-fit"
+        >
+          <span className="border-b border-baden-cream/40 pb-0.5 group-hover:border-baden-cream transition-colors duration-200">
+            {isRu ? 'Смотреть варианты' : 'View the residences'}
+          </span>
+        </a>
+      </div>
 
-          {/* Day / Dusk toggle */}
-          <div className="flex items-center gap-3 w-full max-w-[220px] sm:max-w-[200px]">
-            <span
-              className={`text-xs tracking-widest transition-colors duration-300 ${
-                t < 0.5 ? 'text-baden-gold-bright' : 'text-baden-muted'
+      {/* Slide index — bottom-right on desktop; theme caption fades in above it */}
+      <div
+        className="absolute z-10 bottom-24 right-8 md:right-10 hidden md:flex flex-col items-end gap-5 max-w-xs text-right"
+        onMouseEnter={() => setPaused(true)}
+        onMouseLeave={() => setPaused(false)}
+      >
+        {slide[isRu ? 'ru' : 'en'].line && (
+          <p key={slide.key} className="text-sm text-baden-cream/65 animate-[fadein_600ms_ease_both]">
+            {slide[isRu ? 'ru' : 'en'].line}
+          </p>
+        )}
+        <nav className="flex flex-col items-end gap-3">
+          {SLIDES.map((s, i) => (
+            <button
+              key={s.key}
+              type="button"
+              onClick={() => setActive(i)}
+              onFocus={() => setPaused(true)}
+              onBlur={() => setPaused(false)}
+              className={`group flex items-center gap-3 text-xs tracking-widest uppercase transition-colors duration-300 ${
+                i === active ? 'text-baden-cream' : 'text-baden-cream/40 hover:text-baden-cream/70'
               }`}
             >
-              {isRu ? 'ДЕНЬ' : 'DAY'}
-            </span>
-            <input
-              type="range"
-              min="0"
-              max="100"
-              value={dusk}
-              onChange={(e) => setDusk(Number(e.target.value))}
-              className="dusk-slider flex-1"
-              aria-label={isRu ? 'Переключатель день/сумерки' : 'Day/dusk toggle'}
-            />
-            <span
-              className={`text-xs tracking-widest transition-colors duration-300 ${
-                t >= 0.5 ? 'text-baden-gold-bright' : 'text-baden-muted'
-              }`}
-            >
-              {isRu ? 'СУМЕРКИ' : 'DUSK'}
-            </span>
-          </div>
-        </div>
+              <span>{isRu ? s.ru.label : s.en.label}</span>
+              <span
+                className={`h-px transition-all duration-300 ${
+                  i === active ? 'w-8 bg-baden-gold-bright' : 'w-4 bg-baden-cream/30 group-hover:bg-baden-cream/60'
+                }`}
+                aria-hidden
+              />
+            </button>
+          ))}
+        </nav>
+      </div>
+
+      {/* Mobile slide dots */}
+      <div className="absolute z-10 bottom-8 right-6 flex gap-2 md:hidden">
+        {SLIDES.map((s, i) => (
+          <button
+            key={s.key}
+            type="button"
+            onClick={() => setActive(i)}
+            aria-label={isRu ? s.ru.label : s.en.label}
+            className={`h-1.5 rounded-full transition-all duration-300 ${
+              i === active ? 'w-6 bg-baden-gold-bright' : 'w-1.5 bg-baden-cream/40'
+            }`}
+          />
+        ))}
+      </div>
+
+      {/* Scroll cue — minimal, structural, no brand copy */}
+      <div
+        aria-hidden
+        className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3"
+      >
+        <span className="text-[10px] tracking-widest2 text-baden-cream/50">
+          {isRu ? 'ВНИЗ' : 'SCROLL'}
+        </span>
+        <span className="relative h-10 w-px overflow-hidden bg-baden-cream/20">
+          <span className="absolute inset-x-0 top-0 h-1/2 bg-baden-cream/70 animate-[scrollcue_1.8s_ease-in-out_infinite]" />
+        </span>
       </div>
     </section>
   );

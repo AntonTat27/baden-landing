@@ -31,7 +31,7 @@ export default function ResidenceDetail() {
           className="absolute inset-0 h-full w-full object-cover"
           style={{
             objectPosition: positionFor(unit.image),
-            filter: 'saturate(0.88) brightness(0.85) sepia(0.12)',
+            filter: 'saturate(0.9) brightness(0.85)',
           }}
         />
         <div className="absolute inset-0 bg-baden-base/45" aria-hidden />

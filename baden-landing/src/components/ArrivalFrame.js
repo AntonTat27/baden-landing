@@ -16,7 +16,7 @@ export default function ArrivalFrame() {
         className="absolute inset-0 h-full w-full object-cover"
         style={{
           objectPosition: positionFor(arrivalImg),
-          filter: 'brightness(0.78) saturate(0.8) sepia(0.16) contrast(1.03)',
+          filter: 'brightness(0.8) saturate(0.85)',
         }}
       />
       {/* Full-frame warm wash — consistent opacity across the whole image so

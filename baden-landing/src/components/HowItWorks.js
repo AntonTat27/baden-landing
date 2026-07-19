@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useLanguage } from '../context/LanguageContext';
 
-// PLACEHOLDER SECTION — client has not finalized the fractional-ownership
-// format/mechanics yet. Kept deliberately minimal so it's cheap to redesign
-// once share size, week allocation, and resale terms are decided.
+// PLACEHOLDER CONTENT — client has not finalized the fractional-ownership
+// format/mechanics yet; copy stays minimal until share size, week allocation,
+// and resale terms are decided. Layout: interactive step list — hovering or
+// tapping a step expands its detail and swaps the oversized ghost number.
 const STEPS = [
   {
     ru: { title: 'Выберите резиденцию', body: 'Определитесь с форматом и сезоном.' },
@@ -25,30 +26,71 @@ const STEPS = [
 
 export default function HowItWorks() {
   const { isRu } = useLanguage();
+  const [active, setActive] = useState(0);
 
   return (
-    <section id="how-it-works" className="relative bg-baden-panel py-24 md:py-28">
-      <div
-        className="absolute top-0 inset-x-0 h-24 bg-gradient-to-b from-baden-base to-transparent"
-        aria-hidden
-      />
-      <div className="max-w-7xl mx-auto px-6 md:px-10">
-        <h2 className="font-display text-2xl md:text-4xl text-baden-cream mb-14 md:mb-16 max-w-xl">
-          {isRu ? 'Как устроено дробное владение' : 'How fractional ownership works'}
-        </h2>
+    <section id="how-it-works" className="relative bg-baden-panel py-24 md:py-32 overflow-hidden">
+      <div className="max-w-7xl mx-auto px-6 md:px-10 grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-16">
+        <div className="md:col-span-5">
+          <p className="text-xs tracking-widest2 uppercase text-baden-gold mb-4">
+            {isRu ? 'Механика' : 'The mechanics'}
+          </p>
+          <h2 className="font-display font-medium text-2xl md:text-4xl text-baden-cream max-w-md">
+            {isRu ? 'Как устроено дробное владение' : 'How fractional ownership works'}
+          </h2>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 md:gap-8">
-          {STEPS.map((step, i) => (
-            <div key={i} className="border-t border-baden-muted/30 pt-5">
-              <p className="font-accent italic text-3xl text-baden-gold-bright mb-3">
-                {String(i + 1).padStart(2, '0')}
-              </p>
-              <h3 className="font-display text-lg text-baden-cream mb-2">
-                {isRu ? step.ru.title : step.en.title}
-              </h3>
-              <p className="text-sm text-baden-muted">{isRu ? step.ru.body : step.en.body}</p>
-            </div>
-          ))}
+          {/* Oversized ghost number of the active step */}
+          <p
+            key={active}
+            aria-hidden
+            className="hidden md:block font-display font-semibold text-[11rem] leading-none text-baden-cream/[0.07] mt-10 select-none animate-[fadein_500ms_ease_both] tabular-nums"
+          >
+            {String(active + 1).padStart(2, '0')}
+          </p>
+        </div>
+
+        <div className="md:col-span-7">
+          {STEPS.map((step, i) => {
+            const isActive = i === active;
+            return (
+              <button
+                key={i}
+                type="button"
+                onMouseEnter={() => setActive(i)}
+                onClick={() => setActive(i)}
+                aria-expanded={isActive}
+                className="block w-full text-left border-t border-baden-cream/10 last:border-b py-6 md:py-7 group"
+              >
+                <div className="flex items-baseline gap-5">
+                  <span
+                    className={`font-display text-sm tabular-nums transition-colors duration-300 ${
+                      isActive ? 'text-baden-gold-bright' : 'text-baden-muted'
+                    }`}
+                  >
+                    {String(i + 1).padStart(2, '0')}
+                  </span>
+                  <h3
+                    className={`font-display text-xl md:text-2xl transition-colors duration-300 ${
+                      isActive ? 'text-baden-cream' : 'text-baden-cream/45 group-hover:text-baden-cream/70'
+                    }`}
+                  >
+                    {isRu ? step.ru.title : step.en.title}
+                  </h3>
+                </div>
+                {/* Expanding detail row */}
+                <div
+                  className="grid transition-[grid-template-rows] duration-500 ease-out"
+                  style={{ gridTemplateRows: isActive ? '1fr' : '0fr' }}
+                >
+                  <div className="overflow-hidden">
+                    <p className="pl-[calc(1.25rem+2ch)] pt-3 text-sm md:text-base text-baden-muted max-w-md">
+                      {isRu ? step.ru.body : step.en.body}
+                    </p>
+                  </div>
+                </div>
+              </button>
+            );
+          })}
         </div>
       </div>
     </section>

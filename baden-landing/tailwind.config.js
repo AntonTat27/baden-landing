@@ -5,16 +5,16 @@ module.exports = {
     extend: {
       colors: {
         baden: {
-          base: '#241C14',
-          panel: '#2E2418',
-          cream: '#E8DCC3',
-          gold: '#CB9A44',
-          'gold-bright': '#DFAE55',
-          muted: '#8A7458',
+          base: '#0B0B0B',
+          panel: '#141414',
+          cream: '#F5F4F1',
+          gold: '#C97B2D',
+          'gold-bright': '#E89A4B',
+          muted: '#8F8B85',
         },
       },
       fontFamily: {
-        display: ['"Bricolage Grotesque"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        display: ['"Golos Text"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
         serif: ['"Instrument Serif"', 'ui-serif', 'Georgia', 'serif'],
         sans: ['"General Sans"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
       },

@@ -3,7 +3,6 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
 
 const LINKS = [
-  { id: 'showcase', ru: 'Резиденция', en: 'Residence' },
   { id: 'listings', ru: 'Варианты', en: 'Options' },
   { id: 'how-it-works', ru: 'Как это работает', en: 'How it works' },
   { id: 'lead-form', ru: 'Контакты', en: 'Contact' },
