@@ -8,8 +8,9 @@ import ResidenceDetail from './pages/ResidenceDetail';
 
 function App() {
   return (
-    <LanguageProvider>
-      <BrowserRouter>
+      <LanguageProvider>
+          {/* Use PUBLIC_URL as basename so Router works correctly when deployed to GitHub Pages under a repo subpath */}
+          <BrowserRouter basename={process.env.PUBLIC_URL}>
         <div className="min-h-screen flex flex-col bg-baden-base text-baden-cream font-sans">
           <Nav />
           <main className="flex-1">
