@@ -1,20 +1,15 @@
 {
   "files": {
-    "main.css": "/baden-landing/static/css/main.edd30673.css",
-    "main.js": "/baden-landing/static/js/main.fe64e89f.js",
+    "main.css": "/baden-landing/static/css/main.2921f72c.css",
+    "main.js": "/baden-landing/static/js/main.705b8148.js",
     "static/js/453.774148d4.chunk.js": "/baden-landing/static/js/453.774148d4.chunk.js",
-    "static/media/showcase-pool.jpg": "/baden-landing/static/media/showcase-pool.cdcaf8548fe0a63a3ed3.jpg",
-    "static/media/showcase-grounds.jpg": "/baden-landing/static/media/showcase-grounds.d2906142624e61bcbfea.jpg",
-    "static/media/showcase-concierge.jpg": "/baden-landing/static/media/showcase-concierge.b735f063fd369666263d.jpg",
-    "static/media/hero.jpg": "/baden-landing/static/media/hero.1d8bdea55719d9a6ca8e.jpg",
-    "static/media/arrival.jpg": "/baden-landing/static/media/arrival.f4f2d0b2e91fdff3d022.jpg",
     "index.html": "/baden-landing/index.html",
-    "main.edd30673.css.map": "/baden-landing/static/css/main.edd30673.css.map",
-    "main.fe64e89f.js.map": "/baden-landing/static/js/main.fe64e89f.js.map",
+    "main.2921f72c.css.map": "/baden-landing/static/css/main.2921f72c.css.map",
+    "main.705b8148.js.map": "/baden-landing/static/js/main.705b8148.js.map",
     "453.774148d4.chunk.js.map": "/baden-landing/static/js/453.774148d4.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.edd30673.css",
-    "static/js/main.fe64e89f.js"
+    "static/css/main.2921f72c.css",
+    "static/js/main.705b8148.js"
   ]
 }
