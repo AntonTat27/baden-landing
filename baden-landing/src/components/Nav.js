@@ -3,6 +3,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
 
 const LINKS = [
+  { id: 'amenities', ru: 'Удобства', en: 'Amenities' },
   { id: 'listings', ru: 'Варианты', en: 'Options' },
   { id: 'how-it-works', ru: 'Как это работает', en: 'How it works' },
   { id: 'lead-form', ru: 'Контакты', en: 'Contact' },
@@ -52,8 +53,13 @@ export default function Nav() {
               onClick={goTo(l.id)}
               className="group text-sm text-baden-muted hover:text-baden-cream transition-colors duration-200"
             >
-              <span className="border-b border-transparent group-hover:border-baden-gold pb-0.5 transition-colors duration-200">
+              <span className="relative pb-0.5">
                 {isRu ? l.ru : l.en}
+                {/* Underline draw-in, left to right */}
+                <span
+                  className="absolute left-0 bottom-0 h-px w-full bg-baden-gold origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-out"
+                  aria-hidden
+                />
               </span>
             </a>
           ))}

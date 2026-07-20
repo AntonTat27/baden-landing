@@ -29,12 +29,12 @@ export default function ArrivalFrame() {
         aria-hidden
       />
       <div
-        className="absolute bottom-0 inset-x-0 h-32 bg-gradient-to-t from-baden-panel to-transparent z-10"
+        className="absolute bottom-0 inset-x-0 h-32 bg-gradient-to-t from-baden-cream to-transparent z-10"
         aria-hidden
       />
 
       <div className="relative z-20 flex h-full items-center justify-center px-6 text-center">
-        <p className="font-display text-2xl sm:text-3xl md:text-4xl text-baden-cream max-w-2xl">
+        <p className="font-accent italic text-3xl sm:text-4xl md:text-5xl text-baden-cream max-w-2xl">
           {isRu ? 'Всё начинается с моря на горизонте.' : 'It all begins with the sea on the horizon.'}
         </p>
       </div>

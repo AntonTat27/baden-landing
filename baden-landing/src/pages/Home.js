@@ -1,6 +1,8 @@
 import React, { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import Hero from '../components/Hero';
+import Amenities from '../components/Amenities';
+import ArrivalFrame from '../components/ArrivalFrame';
 import Listings from '../components/Listings';
 import HowItWorks from '../components/HowItWorks';
 import WhySelector from '../components/WhySelector';
@@ -25,6 +27,8 @@ export default function Home() {
   return (
     <>
       <Hero />
+      <Amenities />
+      <ArrivalFrame />
       <Listings />
       <HowItWorks />
       <WhySelector />

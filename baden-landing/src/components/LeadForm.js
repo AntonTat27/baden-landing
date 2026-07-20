@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { useLanguage } from '../context/LanguageContext';
+import useInView from '../hooks/useInView';
+import Reveal from './Reveal';
 
 // No backend wired up yet — submit handler is a local stub. Replace with a
 // real endpoint (or CRM/webhook) before launch.
@@ -8,6 +10,7 @@ export default function LeadForm({ compact = false, id = 'lead-form' }) {
   const [form, setForm] = useState({ name: '', phone: '', time: '' });
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState('');
+  const [formRef, formInView] = useInView(0.15);
 
   const handleChange = (field) => (e) => setForm((f) => ({ ...f, [field]: e.target.value }));
 
@@ -31,7 +34,7 @@ export default function LeadForm({ compact = false, id = 'lead-form' }) {
             aria-hidden
           />
         )}
-        <div className="max-w-xl mx-auto px-6 md:px-10 text-center">
+        <div className="max-w-xl mx-auto px-6 md:px-10 text-center animate-[fadein_500ms_ease_both]">
           <p className="font-display text-2xl md:text-3xl text-baden-gold-bright mb-3">
             {isRu ? 'Спасибо!' : 'Thank you!'}
           </p>
@@ -55,7 +58,7 @@ export default function LeadForm({ compact = false, id = 'lead-form' }) {
       )}
       <div className="max-w-xl mx-auto px-6 md:px-10">
         {!compact && (
-          <>
+          <Reveal>
             <h2 className="font-display text-3xl md:text-4xl text-baden-cream mb-3">
               {isRu
                 ? 'Узнайте, подходит ли вам эта резиденция'
@@ -66,7 +69,7 @@ export default function LeadForm({ compact = false, id = 'lead-form' }) {
                 ? 'Оставьте контакт — мы подберём вариант и свяжемся с вами для короткого разговора.'
                 : "Leave your contact — we'll find the right option and reach out for a short conversation."}
             </p>
-          </>
+          </Reveal>
         )}
         {compact && (
           <h3 className="font-display text-xl md:text-2xl text-baden-cream mb-6">
@@ -74,8 +77,13 @@ export default function LeadForm({ compact = false, id = 'lead-form' }) {
           </h3>
         )}
 
-        <form onSubmit={handleSubmit} className="flex flex-col gap-6">
-          <div>
+        <form ref={formRef} onSubmit={handleSubmit} className="flex flex-col gap-6">
+          <div
+            className={formInView ? '' : 'opacity-0'}
+            style={{
+              animation: formInView ? 'rise 600ms cubic-bezier(0.22, 1, 0.36, 1) 80ms both' : 'none',
+            }}
+          >
             <label htmlFor={`${id}-name`} className="block text-xs tracking-widest2 uppercase text-baden-gold mb-2">
               {isRu ? 'Имя' : 'Name'}
             </label>
@@ -89,7 +97,12 @@ export default function LeadForm({ compact = false, id = 'lead-form' }) {
             />
           </div>
 
-          <div>
+          <div
+            className={formInView ? '' : 'opacity-0'}
+            style={{
+              animation: formInView ? 'rise 600ms cubic-bezier(0.22, 1, 0.36, 1) 170ms both' : 'none',
+            }}
+          >
             <label htmlFor={`${id}-phone`} className="block text-xs tracking-widest2 uppercase text-baden-gold mb-2">
               {isRu ? 'Телефон / WhatsApp' : 'Phone / WhatsApp'}
             </label>
@@ -103,7 +116,12 @@ export default function LeadForm({ compact = false, id = 'lead-form' }) {
             />
           </div>
 
-          <div>
+          <div
+            className={formInView ? '' : 'opacity-0'}
+            style={{
+              animation: formInView ? 'rise 600ms cubic-bezier(0.22, 1, 0.36, 1) 260ms both' : 'none',
+            }}
+          >
             <label htmlFor={`${id}-time`} className="block text-xs tracking-widest2 uppercase text-baden-gold mb-2">
               {isRu ? 'Удобное время звонка (необязательно)' : 'Preferred callback time (optional)'}
             </label>
@@ -121,7 +139,12 @@ export default function LeadForm({ compact = false, id = 'lead-form' }) {
 
           <button
             type="submit"
-            className="mt-2 self-start text-sm md:text-base tracking-wide text-baden-gold bg-transparent px-7 py-3 border border-baden-gold hover:bg-baden-gold hover:text-baden-base transition-colors duration-200"
+            className={`mt-2 self-start text-sm md:text-base tracking-wide text-baden-gold bg-transparent px-7 py-3 border border-baden-gold hover:bg-baden-gold hover:text-baden-base transition-colors duration-200 ${
+              formInView ? '' : 'opacity-0'
+            }`}
+            style={{
+              animation: formInView ? 'rise 600ms cubic-bezier(0.22, 1, 0.36, 1) 350ms both' : 'none',
+            }}
           >
             {isRu ? 'Получить консультацию' : 'Get a consultation'}
           </button>

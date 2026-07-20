@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { useLanguage } from '../context/LanguageContext';
+import useInView from '../hooks/useInView';
+import Reveal from './Reveal';
 
 // PLACEHOLDER CONTENT — client has not finalized the fractional-ownership
 // format/mechanics yet; copy stays minimal until share size, week allocation,
@@ -27,17 +29,20 @@ const STEPS = [
 export default function HowItWorks() {
   const { isRu } = useLanguage();
   const [active, setActive] = useState(0);
+  const [listRef, listInView] = useInView(0.2);
 
   return (
     <section id="how-it-works" className="relative bg-baden-panel py-24 md:py-32 overflow-hidden">
       <div className="max-w-7xl mx-auto px-6 md:px-10 grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-16">
         <div className="md:col-span-5">
-          <p className="text-xs tracking-widest2 uppercase text-baden-gold mb-4">
-            {isRu ? 'Механика' : 'The mechanics'}
-          </p>
-          <h2 className="font-display font-medium text-2xl md:text-4xl text-baden-cream max-w-md">
-            {isRu ? 'Как устроено дробное владение' : 'How fractional ownership works'}
-          </h2>
+          <Reveal>
+            <p className="text-xs tracking-widest2 uppercase text-baden-gold mb-4">
+              {isRu ? 'Механика' : 'The mechanics'}
+            </p>
+            <h2 className="font-display font-medium text-2xl md:text-4xl text-baden-cream max-w-md">
+              {isRu ? 'Как устроено дробное владение' : 'How fractional ownership works'}
+            </h2>
+          </Reveal>
 
           {/* Oversized ghost number of the active step */}
           <p
@@ -49,7 +54,7 @@ export default function HowItWorks() {
           </p>
         </div>
 
-        <div className="md:col-span-7">
+        <div className="md:col-span-7" ref={listRef}>
           {STEPS.map((step, i) => {
             const isActive = i === active;
             return (
@@ -59,7 +64,14 @@ export default function HowItWorks() {
                 onMouseEnter={() => setActive(i)}
                 onClick={() => setActive(i)}
                 aria-expanded={isActive}
-                className="block w-full text-left border-t border-baden-cream/10 last:border-b py-6 md:py-7 group"
+                className={`block w-full text-left border-t border-baden-cream/10 last:border-b py-6 md:py-7 group ${
+                  listInView ? '' : 'opacity-0'
+                }`}
+                style={{
+                  animation: listInView
+                    ? `rise 600ms cubic-bezier(0.22, 1, 0.36, 1) ${i * 90}ms both`
+                    : 'none',
+                }}
               >
                 <div className="flex items-baseline gap-5">
                   <span

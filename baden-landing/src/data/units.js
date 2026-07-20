@@ -1,12 +1,9 @@
-import heroImg from '../assets/images/hero.jpg';
-import arrivalImg from '../assets/images/arrival.jpg';
-import poolImg from '../assets/images/showcase-pool.jpg';
-import groundsImg from '../assets/images/showcase-grounds.jpg';
-import conciergeImg from '../assets/images/showcase-concierge.jpg';
-
-// NOTE: renders are generic exterior stills of the Baden property (not photographed
-// per individual unit type). Reused across cards as placeholder imagery until the
-// client supplies unit-specific renders/photography.
+// NOTE: placeholder photography sourced from Unsplash (free to use under the
+// Unsplash License, https://unsplash.com/license) until the client supplies
+// real photography for each property. Each listing below is a distinct,
+// independently-owned property in the Baden portfolio — not different units
+// inside the same building.
+import { HOTEL_IMG, VILLA_IMG, LAGOON_IMG, RESIDENCES_IMG, WATER_VILLAS_IMG } from '../assets/imagePositions';
 
 export const MONTHS = [
   { ru: 'Январь', en: 'January', short: { ru: 'Янв', en: 'Jan' } },
@@ -23,70 +20,111 @@ export const MONTHS = [
   { ru: 'Декабрь', en: 'December', short: { ru: 'Дек', en: 'Dec' } },
 ];
 
+// Baden works across three distinct ownership models — not every property
+// offers all three. `ownership` names which one(s) apply to that listing;
+// `entryFrom` is the starting buy-in price to actually own it (a one-time
+// figure, separate from `prices`, which is the illustrative seasonal usage
+// cost shown on the residence page). See OWNERSHIP_MODELS below for the
+// plain-language definition of each model.
+//
+// PLACEHOLDER FIGURES — entryFrom values (especially the €5,000 Beyzade
+// timeshare entry) are illustrative for the client call, not confirmed
+// pricing. Replace with real figures before this goes live.
+export const OWNERSHIP_MODELS = {
+  full: {
+    accent: 'gold',
+    ru: { label: 'Полное владение', short: 'Полное владение', def: 'Объект целиком принадлежит вам — без графика по неделям и без совладельцев.' },
+    en: { label: 'Full ownership', short: 'Full ownership', def: 'You own the whole property outright — no shared calendar, no co-owners.' },
+  },
+  fractional: {
+    accent: 'sea',
+    ru: { label: 'Дробное владение', short: 'Доля', def: 'Официально зарегистрированная доля в конкретном объекте — ТАПУ на ваше имя, свои недели, можно продать или передать по наследству.' },
+    en: { label: 'Fractional ownership', short: 'Fractional', def: 'A legally registered share of a specific property — a title (TAPU) in your name, your own weeks, resellable and inheritable.' },
+  },
+  timeshare: {
+    accent: 'teal',
+    ru: { label: 'Таймшер', short: 'Таймшер', def: 'Право пользования определёнными неделями каждый год — самый доступный порог входа, для отдыха.' },
+    en: { label: 'Timeshare', short: 'Timeshare', def: 'The right to use specific weeks every year — the lowest entry point, best suited to holiday use.' },
+  },
+};
+
+// Five independent properties across the Turkish riviera — a curated
+// portfolio, each with its own architecture, location, character, and
+// ownership model.
 export const UNITS = [
   {
-    id: 'standard-1-1',
-    name: { ru: 'Стандартные апартаменты 1+1', en: 'Standard apartment 1+1' },
-    size: '45 m²',
-    guests: '2–4',
-    location: { ru: 'Турция', en: 'Turkey' },
-    image: heroImg,
-    prices: [6999, 6999, 6999, 9999, 11999, 12999, 14999, 14999, 13999, 11999, 9999, 6999],
+    id: 'villa-aurelia',
+    name: { ru: 'Вилла Aurelia', en: 'Villa Aurelia' },
+    size: '210 m² · сад 600 m²',
+    guests: '4–8',
+    location: { ru: 'Бодрум', en: 'Bodrum' },
+    image: VILLA_IMG,
+    ownership: ['full'],
+    entryFrom: 420000,
+    prices: [8999, 8999, 8999, 12999, 15999, 17999, 20999, 20999, 18999, 15999, 12999, 8999],
     blurb: {
-      ru: 'Компактная резиденция для тех, кому важно море рядом и минимум забот.',
-      en: 'A compact residence for those who want the sea close by and nothing to manage.',
+      ru: 'Частная вилла на холме с видом на залив — собственный сад, терраса и ощущение полностью личного дома. Продаётся целиком, в полную собственность.',
+      en: 'A private hillside villa above the bay — its own garden, terrace, and the feel of a fully personal home. Sold outright, full ownership only.',
     },
   },
   {
-    id: 'standard-garden-1-1',
-    name: { ru: 'Стандарт с садом 1+1', en: 'Standard with garden 1+1' },
-    size: '85 m² / 130 m²',
-    guests: '2–4',
-    location: { ru: 'Турция', en: 'Turkey' },
-    image: groundsImg,
-    prices: [8999, 8999, 8999, 11999, 13999, 14999, 18999, 18999, 16999, 13999, 11999, 8999],
-    blurb: {
-      ru: 'Собственный сад и больше пространства для размеренной жизни у моря.',
-      en: 'A private garden and more room to slow down by the sea.',
-    },
-  },
-  {
-    id: 'standard-2-1',
-    name: { ru: 'Стандартные апартаменты 2+1', en: 'Standard apartment 2+1' },
-    size: '80 m²',
+    id: 'beyzade-hotel',
+    name: { ru: 'Beyzade Resort', en: 'Beyzade Resort' },
+    size: 'Семейный резорт · концепция халяль',
     guests: '2–6',
-    location: { ru: 'Турция', en: 'Turkey' },
-    image: poolImg,
-    prices: [9999, 9999, 9999, 14999, 17999, 19999, 21999, 21999, 19999, 17999, 14999, 9999],
+    location: { ru: 'Аланья', en: 'Alanya' },
+    image: HOTEL_IMG,
+    ownership: ['timeshare'],
+    entryFrom: 5000,
+    prices: [10999, 10999, 10999, 14999, 18999, 21999, 24999, 24999, 21999, 18999, 14999, 10999],
     blurb: {
-      ru: 'Достаточно места для семьи или друзей, без компромиссов в комфорте.',
-      en: 'Enough room for family or friends, without compromising on comfort.',
+      ru: 'Семейный резорт в сердце Аланьи с бассейном для женщин, хамамом и мольбенной — таймшер на определённые недели, самый доступный вход в портфель Baden.',
+      en: 'A family resort in the heart of Alanya with a women-only pool, a hamam, and a prayer room — sold as timeshare weeks, the most accessible entry point in the Baden portfolio.',
     },
   },
   {
-    id: 'duplex-3-1',
-    name: { ru: 'Дуплекс 3+1', en: 'Duplex 3+1' },
-    size: '120 m²',
-    guests: '2–8',
-    location: { ru: 'Турция', en: 'Turkey' },
-    image: conciergeImg,
-    prices: [10999, 10999, 10999, 15999, 18999, 20999, 22999, 22999, 20999, 18999, 15999, 10999],
+    id: 'cape-lagoon-resort',
+    name: { ru: 'Cape Lagoon Resort', en: 'Cape Lagoon Resort' },
+    size: 'Резорт · 4.2 га',
+    guests: '2–6',
+    location: { ru: 'Фетхие', en: 'Fethiye' },
+    image: LAGOON_IMG,
+    ownership: ['fractional'],
+    entryFrom: 32000,
+    prices: [9999, 9999, 9999, 13999, 16999, 18999, 21999, 21999, 18999, 16999, 13999, 9999],
     blurb: {
-      ru: 'Два уровня, отдельная гостиная и ощущение полноценного дома.',
-      en: 'Two levels, a separate living room, and the feel of a full-sized home.',
+      ru: 'Лагунный курорт с прямым выходом к воде и собственным пляжным клубом. Доля в объекте — ТАПУ на ваше имя.',
+      en: 'A lagoon-front resort with direct water access and its own beach club. Sold as a fractional share, with a title (TAPU) in your name.',
     },
   },
   {
-    id: 'prime-deluxe-2-1',
-    name: { ru: 'Prime Deluxe 2+1', en: 'Prime Deluxe 2+1' },
-    size: '218 m² / 320 m²',
+    id: 'marea-residences',
+    name: { ru: 'Marea Residences', en: 'Marea Residences' },
+    size: 'Резиденции · 14 домов',
     guests: '2–8',
-    location: { ru: 'Турция', en: 'Turkey' },
-    image: arrivalImg,
-    prices: [11999, 11999, 11999, 18999, 23999, 25999, 29999, 29999, 27999, 25999, 18999, 11999],
+    location: { ru: 'Чешме', en: 'Çeşme' },
+    image: RESIDENCES_IMG,
+    ownership: ['fractional', 'full'],
+    entryFrom: 45000,
+    prices: [11999, 11999, 11999, 16999, 19999, 21999, 23999, 23999, 21999, 19999, 16999, 11999],
     blurb: {
-      ru: 'Флагманская резиденция — самая большая площадь и лучшие виды комплекса.',
-      en: 'The flagship residence — the largest footprint and the best views on the property.',
+      ru: 'Современный комплекс приморских резиденций — архитектура, обращённая к морю, и общий бассейн-инфинити. Доступны и доля, и полная покупка отдельного дома.',
+      en: 'A modern seafront residence complex — architecture that faces the water, with a shared infinity pool. Available as either a fractional share or a full purchase of a single home.',
+    },
+  },
+  {
+    id: 'the-water-villas',
+    name: { ru: 'The Water Villas', en: 'The Water Villas' },
+    size: '340 m² · над водой',
+    guests: '4–10',
+    location: { ru: 'Анталья', en: 'Antalya' },
+    image: WATER_VILLAS_IMG,
+    ownership: ['fractional'],
+    entryFrom: 68000,
+    prices: [15999, 15999, 15999, 22999, 27999, 30999, 34999, 34999, 30999, 27999, 22999, 15999],
+    blurb: {
+      ru: 'Флагман портфеля — виллы на сваях над лагуной, самые большие площади и прямой спуск к воде с террасы. Доля в объекте — ТАПУ на ваше имя.',
+      en: 'The flagship of the portfolio — villas raised over the lagoon, the largest footprints, and a private ladder down to the water. Sold as a fractional share, with a title (TAPU) in your name.',
     },
   },
 ];

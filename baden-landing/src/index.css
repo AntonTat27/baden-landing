@@ -7,27 +7,51 @@
     scroll-behavior: smooth;
   }
 
+  /* Anchor targets clear the fixed navbar instead of hiding beneath it */
+  section[id] {
+    scroll-margin-top: 5rem;
+  }
+
   body {
     margin: 0;
-    background-color: #0b0b0b;
-    color: #f5f4f1;
+    background-color: #0a0d12;
+    color: #f5f1e8;
     font-family: 'General Sans', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
 
   ::selection {
-    background-color: #c97b2d;
-    color: #0b0b0b;
+    background-color: #d9b36a;
+    color: #0a0d12;
   }
 }
 
 @layer utilities {
+  /* Editorial display serif — the premium anchor. Matches tailwind font-display. */
   .font-display {
+    font-family: 'Fraunces', ui-serif, Georgia, serif;
+  }
+  .font-grotesk {
     font-family: 'Golos Text', ui-sans-serif, system-ui, sans-serif;
   }
   .font-accent {
     font-family: 'Instrument Serif', ui-serif, Georgia, serif;
+  }
+  /* Subtle film grain overlay — adds depth over flat dark fields */
+  .bg-grain {
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+  }
+  .text-balance {
+    text-wrap: balance;
+  }
+  /* Horizontal card rails (Properties) — snap scroll, hidden scrollbar */
+  .no-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
   }
 }
 
@@ -69,5 +93,60 @@
   }
   100% {
     transform: translateY(200%);
+  }
+}
+
+/* Ambient Ken Burns drift for full-bleed backdrops (Hero, ResidenceDetail).
+   Pure transform, GPU-composited; direction alternates per slide via
+   animation-direction, phase offsets via negative delays. */
+@keyframes kenburns {
+  from {
+    transform: scale(1.02) translate3d(0, 0, 0);
+  }
+  to {
+    transform: scale(1.1) translate3d(1.2%, 0, 0);
+  }
+}
+
+/* Very slow horizontal breathing on Listings panel images — scale stays
+   constant so it reads as a drift, not a zoom pump. */
+@keyframes driftx {
+  from {
+    transform: scale(1.08) translate3d(-1.4%, 0, 0);
+  }
+  to {
+    transform: scale(1.08) translate3d(1.4%, 0, 0);
+  }
+}
+
+/* One-shot scroll reveal, paired with IntersectionObserver (useInView) and
+   per-child animation-delay for staggers. fill-mode: both keeps children
+   hidden through their delay. */
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 24px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+/* Reduced motion: collapse every ambient/reveal/transition effect to an
+   instant state change. JS-driven effects (hero parallax/exit) additionally
+   check this media query and never attach their scroll listener. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    animation-delay: 0ms !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
+  }
+  html {
+    scroll-behavior: auto;
   }
 }

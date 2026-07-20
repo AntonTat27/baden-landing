@@ -1,21 +1,21 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { LanguageProvider } from './context/LanguageContext';
-import Nav from './components/Nav';
-import Footer from './components/Footer';
-import Home from './pages/Home';
+import NavBar from './premium/NavBar';
+import Footer from './premium/Footer';
+import PremiumHome from './pages/PremiumHome';
 import ResidenceDetail from './pages/ResidenceDetail';
 
 function App() {
   return (
-      <LanguageProvider>
-          {/* Use PUBLIC_URL as basename so Router works correctly when deployed to GitHub Pages under a repo subpath */}
-          <BrowserRouter basename={process.env.PUBLIC_URL}>
+    <LanguageProvider>
+      {/* PUBLIC_URL basename keeps routing correct under the GitHub Pages subpath */}
+      <BrowserRouter basename={process.env.PUBLIC_URL}>
         <div className="min-h-screen flex flex-col bg-baden-base text-baden-cream font-sans">
-          <Nav />
+          <NavBar />
           <main className="flex-1">
             <Routes>
-              <Route path="/" element={<Home />} />
+              <Route path="/" element={<PremiumHome />} />
               <Route path="/residence/:id" element={<ResidenceDetail />} />
             </Routes>
           </main>

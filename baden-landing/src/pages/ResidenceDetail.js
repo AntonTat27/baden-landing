@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { useParams, Link, Navigate } from 'react-router-dom';
-import { getUnitById, MONTHS, formatEUR } from '../data/units';
+import { getUnitById, OWNERSHIP_MODELS, MONTHS, formatEUR } from '../data/units';
 import { positionFor } from '../assets/imagePositions';
 import { useLanguage } from '../context/LanguageContext';
 import LeadForm from '../components/LeadForm';
+import Reveal from '../components/Reveal';
 
 export default function ResidenceDetail() {
   const { id } = useParams();
@@ -32,6 +33,8 @@ export default function ResidenceDetail() {
           style={{
             objectPosition: positionFor(unit.image),
             filter: 'saturate(0.9) brightness(0.85)',
+            // Same ambient Ken Burns drift as the home hero, slower
+            animation: 'kenburns 32s ease-in-out infinite alternate',
           }}
         />
         <div className="absolute inset-0 bg-baden-base/45" aria-hidden />
@@ -41,20 +44,23 @@ export default function ResidenceDetail() {
         />
         <div className="relative z-10 flex h-full flex-col justify-end px-6 md:px-10 pb-14 max-w-7xl mx-auto">
           <Link
-            to="/#listings"
+            to="/#properties"
             className="text-xs tracking-widest2 uppercase text-baden-muted hover:text-baden-gold-bright transition-colors duration-200 mb-6 w-fit"
           >
             &larr; {isRu ? 'Все варианты' : 'All options'}
           </Link>
           <p className="text-xs tracking-widest2 uppercase text-baden-gold mb-3">
             {isRu ? unit.location.ru : unit.location.en} &middot;{' '}
-            {isRu ? 'Дробное владение' : 'Fractional ownership'}
+            {unit.ownership.map((k) => (isRu ? OWNERSHIP_MODELS[k].ru.label : OWNERSHIP_MODELS[k].en.label)).join(isRu ? ' или ' : ' or ')}
           </p>
           <h1 className="font-display text-4xl md:text-6xl text-baden-cream max-w-2xl">
             {isRu ? unit.name.ru : unit.name.en}
           </h1>
           <p className="mt-4 text-baden-cream/60">
             {unit.size} · {unit.guests} {isRu ? 'гостей' : 'guests'}
+          </p>
+          <p className="mt-2 text-baden-gold-bright font-display text-lg">
+            {isRu ? 'Владеть от ' : 'Own from '}{formatEUR(unit.entryFrom)}
           </p>
         </div>
       </section>
@@ -65,25 +71,29 @@ export default function ResidenceDetail() {
           aria-hidden
         />
         <div className="max-w-4xl mx-auto px-6 md:px-10">
-          <p className="font-display text-xl md:text-2xl text-baden-cream leading-relaxed">
-            {isRu ? unit.blurb.ru : unit.blurb.en}
-          </p>
+          <Reveal>
+            <p className="font-display text-xl md:text-2xl text-baden-cream leading-relaxed">
+              {isRu ? unit.blurb.ru : unit.blurb.en}
+            </p>
+          </Reveal>
         </div>
       </section>
 
       <section className="relative bg-baden-cream py-20 md:py-28">
         <div className="max-w-4xl mx-auto px-6 md:px-10">
-          <p className="text-xs tracking-widest2 uppercase text-baden-gold mb-4">
-            {isRu ? 'Калькулятор' : 'Calculator'}
-          </p>
-          <h2 className="font-display text-2xl md:text-3xl text-baden-base mb-3">
-            {isRu ? 'Оцените стоимость по месяцу' : 'Estimate the cost by month'}
-          </h2>
-          <p className="text-sm text-baden-base/55 mb-10 max-w-xl">
-            {isRu
-              ? 'Иллюстративный расчёт для обсуждения. Точный механизм долей и недель будет определён отдельно.'
-              : 'An illustrative calculation for discussion purposes. The exact share/week mechanics will be finalized separately.'}
-          </p>
+          <Reveal>
+            <p className="text-xs tracking-widest2 uppercase text-baden-gold mb-4">
+              {isRu ? 'Калькулятор' : 'Calculator'}
+            </p>
+            <h2 className="font-display text-2xl md:text-3xl text-baden-base mb-3">
+              {isRu ? 'Оцените стоимость использования по месяцу' : 'Estimate usage cost by month'}
+            </h2>
+            <p className="text-sm text-baden-base/55 mb-10 max-w-xl">
+              {isRu
+                ? 'Это иллюстративная оценка стоимости использования — отдельно от стоимости входа во владение, указанной выше. Точный механизм будет определён отдельно, в зависимости от выбранного формата.'
+                : 'This is an illustrative usage-cost estimate — separate from the ownership entry price shown above. The exact mechanics will be finalized separately, depending on the model you choose.'}
+            </p>
+          </Reveal>
 
           <div className="mb-10">
             <p className="text-xs tracking-widest2 uppercase text-baden-base/45 mb-4">
@@ -120,7 +130,12 @@ export default function ResidenceDetail() {
               >
                 &minus;
               </button>
-              <span className="font-display text-2xl text-baden-base w-8 text-center">{weeks}</span>
+              <span
+                key={weeks}
+                className="font-display text-2xl text-baden-base w-8 text-center animate-[fadein_250ms_ease]"
+              >
+                {weeks}
+              </span>
               <button
                 type="button"
                 onClick={() => setWeeks((w) => Math.min(4, w + 1))}
@@ -137,19 +152,28 @@ export default function ResidenceDetail() {
               <p className="text-xs text-baden-base/50 mb-2">
                 {isRu ? `${MONTHS[monthIndex].ru} · за месяц` : `${MONTHS[monthIndex].en} · per month`}
               </p>
-              <p className="font-display text-2xl text-baden-base">{formatEUR(monthlyPrice)}</p>
+              <p key={monthlyPrice} className="font-display text-2xl text-baden-base animate-[fadein_350ms_ease]">
+                {formatEUR(monthlyPrice)}
+              </p>
             </div>
             <div>
               <p className="text-xs text-baden-base/50 mb-2">
                 {isRu ? 'Ориентировочно за неделю' : 'Approx. per week'}
               </p>
-              <p className="font-display text-2xl text-baden-base">{formatEUR(pricePerWeek)}</p>
+              <p key={pricePerWeek} className="font-display text-2xl text-baden-base animate-[fadein_350ms_ease]">
+                {formatEUR(pricePerWeek)}
+              </p>
             </div>
             <div>
               <p className="text-xs text-baden-base/50 mb-2">
                 {isRu ? `Итого за ${weeks} нед. (иллюстративно)` : `Total for ${weeks} wk(s) (illustrative)`}
               </p>
-              <p className="font-display text-2xl text-baden-gold-bright">{formatEUR(illustrativeTotal)}</p>
+              <p
+                key={illustrativeTotal}
+                className="font-display text-2xl text-baden-gold-bright animate-[fadein_350ms_ease]"
+              >
+                {formatEUR(illustrativeTotal)}
+              </p>
             </div>
           </div>
         </div>

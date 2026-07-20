@@ -1,25 +1,11 @@
 import React from 'react';
 import { useLanguage } from '../context/LanguageContext';
-import useInView from '../hooks/useInView';
+import Reveal from './Reveal';
 
 // Placeholder About/legal copy — replace with the client's approved
 // company description and legal entity details before launch.
 // Layout: ghost-text brand marquee band + scroll-revealed info columns.
-
-function Reveal({ children, delay = 0, className = '' }) {
-  const [ref, inView] = useInView();
-  return (
-    <div
-      ref={ref}
-      className={`transition-all duration-700 ease-out ${
-        inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
-      } ${className}`}
-      style={{ transitionDelay: `${delay}ms` }}
-    >
-      {children}
-    </div>
-  );
-}
+// The reveal wrapper now lives in components/Reveal.js, shared site-wide.
 
 export default function TrustBlock() {
   const { isRu } = useLanguage();
