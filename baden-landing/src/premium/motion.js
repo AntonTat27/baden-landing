@@ -73,11 +73,14 @@ export function Reveal({
 // Masked single-line headline. Pass an array of strings (one per visual line).
 export function RevealLines({ lines, className = '', lineClassName = '', delayChildren = 0.05 }) {
   const reduce = useReducedMotion();
+  // pb-[0.16em] gives descenders (Cyrillic у/р/ф, Latin g/y/p) room inside the
+  // overflow-hidden mask below — without it, the mask clips them flush at the
+  // baseline.
   if (reduce) {
     return (
       <span className={className}>
         {lines.map((l, i) => (
-          <span key={i} className={`block ${lineClassName}`}>
+          <span key={i} className={`block pb-[0.16em] ${lineClassName}`}>
             {l}
           </span>
         ))}
@@ -93,7 +96,7 @@ export function RevealLines({ lines, className = '', lineClassName = '', delayCh
       viewport={{ once: true, amount: 0.6 }}
     >
       {lines.map((l, i) => (
-        <span key={i} className={`block overflow-hidden ${lineClassName}`}>
+        <span key={i} className={`block overflow-hidden pb-[0.16em] ${lineClassName}`}>
           <motion.span className="block" variants={lineReveal}>
             {l}
           </motion.span>

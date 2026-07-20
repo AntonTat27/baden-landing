@@ -149,6 +149,13 @@ export default function Properties() {
   return (
     <section id="properties" className="relative bg-baden-panel py-24 md:py-32 overflow-hidden">
       <div className="absolute -top-32 right-0 h-[20rem] w-[18rem] rounded-full bg-baden-sea/[0.08] blur-[100px] pointer-events-none" aria-hidden />
+      <div className="absolute bottom-0 -left-24 h-[22rem] w-[20rem] rounded-full bg-baden-gold/[0.06] blur-[120px] pointer-events-none" aria-hidden />
+      <div
+        className="absolute inset-0 opacity-[0.4] pointer-events-none"
+        style={{ background: 'linear-gradient(200deg, transparent 45%, rgba(31,122,140,0.05) 58%, transparent 70%)' }}
+        aria-hidden
+      />
+      <div className="absolute inset-0 opacity-[0.05] bg-grain mix-blend-overlay pointer-events-none" aria-hidden />
       <div className="max-w-8xl mx-auto px-6 md:px-10 relative">
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-8 mb-12 md:mb-16">
           <div className="max-w-2xl">
@@ -158,7 +165,7 @@ export default function Properties() {
             </Reveal>
             <h2 className="font-display font-light text-4xl md:text-6xl text-baden-cream leading-[1.02] tracking-[-0.02em]">
               <RevealLines
-                lines={isRu ? ['Пять объектов,', <>три способа <span className="italic text-baden-gold-bright">владеть</span></>] : ['Five properties,', <>three ways to <span className="italic text-baden-gold-bright">own</span></>]}
+                lines={isRu ? ['Резиденции', <>на <span className="italic text-baden-gold-bright">побережье</span></>] : ['Residences', <>on the <span className="italic text-baden-gold-bright">coast</span></>]}
               />
             </h2>
           </div>

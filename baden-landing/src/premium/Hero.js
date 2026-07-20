@@ -116,7 +116,7 @@ export default function Hero() {
           transition={{ duration: 0.8, ease: EASE, delay: 0.9 }}
           className="mt-6 max-w-md text-base md:text-lg text-baden-cream/75 leading-relaxed"
         >
-          {isRu ? 'Купить целиком, долю или неделю таймшера.' : 'Buy it outright, own a share, or take it a week at a time.'}
+          {isRu ? 'Купить целиком, долю или таймшер.' : 'Buy it outright, own a share, or take it a week at a time.'}
         </motion.p>
 
         <motion.div
