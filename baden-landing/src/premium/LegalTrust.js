@@ -2,6 +2,15 @@ import React from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import { Reveal, RevealLines, fadeUp, motion } from './motion';
 
+// The transaction, as a factual sequence — reinforces the "proper way"
+// message with the actual process, no invented figures.
+const PROCESS = [
+  { ru: 'Проверка объекта', en: 'Due diligence' },
+  { ru: 'Нотариус', en: 'Notary' },
+  { ru: 'Регистрация ТАПУ', en: 'TAPU registration' },
+  { ru: 'Передача владения', en: 'Handover' },
+];
+
 const POINTS = [
   {
     ru: { t: 'Официальный ТАПУ', d: 'Право собственности регистрируется в кадастре Турции и заверяется у нотариуса.' },
@@ -21,7 +30,13 @@ export default function LegalTrust() {
   const { isRu } = useLanguage();
   return (
     <section className="relative bg-baden-panel2 py-24 md:py-32 overflow-hidden">
-      <div className="max-w-8xl mx-auto px-6 md:px-10 grid grid-cols-1 lg:grid-cols-2 gap-14 lg:gap-20 items-center">
+      {/* Ambient depth + faint diagonal, matching the treatment on the other
+          sections so this one doesn't read as a bare panel. */}
+      <div className="absolute -bottom-24 -left-20 h-[26rem] w-[24rem] rounded-full bg-baden-teal/[0.07] blur-[130px] pointer-events-none" aria-hidden />
+      <div className="absolute -top-24 right-0 h-[24rem] w-[22rem] rounded-full bg-baden-gold/[0.06] blur-[120px] pointer-events-none" aria-hidden />
+      <div className="absolute inset-0 opacity-[0.05] bg-grain mix-blend-overlay pointer-events-none" aria-hidden />
+
+      <div className="max-w-8xl mx-auto px-6 md:px-10 grid grid-cols-1 lg:grid-cols-2 gap-14 lg:gap-20 items-center relative">
         {/* Deed / seal graphic */}
         <Reveal className="order-2 lg:order-1">
           <div className="relative mx-auto max-w-md aspect-[4/5] rounded-2xl border border-baden-line bg-gradient-to-br from-baden-panel to-baden-base p-8 md:p-10 overflow-hidden">
@@ -99,6 +114,23 @@ export default function LegalTrust() {
           </motion.ul>
         </div>
       </div>
+
+      {/* Process timeline strip — the sequence, from first look to keys. */}
+      <Reveal className="max-w-8xl mx-auto px-6 md:px-10 mt-16 md:mt-24 relative">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-2 border-t border-baden-line pt-8">
+          {PROCESS.map((p, i) => (
+            <React.Fragment key={i}>
+              <div className="flex items-center gap-3">
+                <span className="font-display text-sm tabular-nums text-baden-gold-bright/70">{String(i + 1).padStart(2, '0')}</span>
+                <span className="text-xs md:text-sm tracking-wide uppercase text-baden-cream/80">{isRu ? p.ru : p.en}</span>
+              </div>
+              {i < PROCESS.length - 1 && (
+                <span className="hidden sm:block flex-1 h-px bg-baden-line mx-2" aria-hidden />
+              )}
+            </React.Fragment>
+          ))}
+        </div>
+      </Reveal>
     </section>
   );
 }

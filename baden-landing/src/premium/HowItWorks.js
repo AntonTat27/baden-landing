@@ -26,23 +26,34 @@ const STEPS = [
   },
 ];
 
-const MODEL_DOT = { gold: 'bg-baden-gold-bright', sea: 'bg-baden-sea', teal: 'bg-baden-teal' };
+const MODEL_ACCENT = {
+  gold: { bar: 'bg-baden-gold-bright', text: 'text-baden-gold-bright', glow: 'bg-baden-gold-bright/[0.07]' },
+  sea: { bar: 'bg-baden-sea', text: 'text-baden-sea', glow: 'bg-baden-sea/[0.07]' },
+  teal: { bar: 'bg-baden-teal', text: 'text-baden-teal', glow: 'bg-baden-teal/[0.07]' },
+};
 
 // The three-model explainer — folded into this section rather than broken
-// out on its own, since it's context for the steps below it, not a separate
-// topic.
+// out on its own. Each model is a card with its own accent edge, so the three
+// ways to own read as distinct choices rather than three lines of small text.
 function OwnershipModels({ isRu }) {
   return (
-    <div className="space-y-5">
-      {Object.entries(OWNERSHIP_MODELS).map(([key, m]) => (
-        <div key={key} className="flex gap-3">
-          <span className={`mt-1.5 h-2 w-2 rounded-full shrink-0 ${MODEL_DOT[m.accent]}`} aria-hidden />
-          <div>
-            <p className="text-sm font-medium text-baden-cream mb-0.5">{isRu ? m.ru.label : m.en.label}</p>
+    <div className="space-y-4">
+      {Object.entries(OWNERSHIP_MODELS).map(([key, m]) => {
+        const a = MODEL_ACCENT[m.accent] || MODEL_ACCENT.gold;
+        return (
+          <div
+            key={key}
+            className="group relative overflow-hidden rounded-2xl border border-baden-line bg-baden-panel/60 pl-5 pr-5 py-4 transition-colors duration-300 hover:border-baden-cream/20"
+          >
+            <span className={`absolute left-0 top-0 bottom-0 w-1 ${a.bar}`} aria-hidden />
+            <span className={`absolute -right-8 -top-8 h-24 w-24 rounded-full blur-2xl ${a.glow}`} aria-hidden />
+            <p className={`text-xs font-medium tracking-widest2 uppercase mb-1.5 ${a.text}`}>
+              {isRu ? m.ru.label : m.en.label}
+            </p>
             <p className="text-sm text-baden-muted leading-relaxed">{isRu ? m.ru.def : m.en.def}</p>
           </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }
@@ -106,10 +117,18 @@ export default function HowItWorks() {
               <motion.li
                 key={i}
                 variants={fadeUp}
-                className="relative border-t border-baden-cream/10 last:border-b py-8 md:py-10 md:pl-8"
+                className="group relative border-t border-baden-cream/10 last:border-b py-8 md:py-11 md:pl-8"
               >
-                <span className="hidden md:block absolute -left-[5px] top-10 h-2.5 w-2.5 rounded-full bg-baden-gold-bright ring-4 ring-baden-panel2" aria-hidden />
-                <div className="flex items-baseline gap-5">
+                <span className="hidden md:block absolute -left-[5px] top-11 h-2.5 w-2.5 rounded-full bg-baden-gold-bright ring-4 ring-baden-panel2" aria-hidden />
+                {/* Oversized ghost numeral for depth — sits behind the copy,
+                    warms to gold on hover. */}
+                <span
+                  className="pointer-events-none absolute right-0 -top-2 font-display text-[5.5rem] md:text-[7rem] leading-none tabular-nums text-baden-cream/[0.05] group-hover:text-baden-gold-bright/[0.10] transition-colors duration-500 select-none"
+                  aria-hidden
+                >
+                  {String(i + 1).padStart(2, '0')}
+                </span>
+                <div className="relative flex items-baseline gap-5">
                   <span className="font-display text-2xl tabular-nums text-baden-gold-bright/80">{String(i + 1).padStart(2, '0')}</span>
                   <div>
                     <h3 className="font-display text-xl md:text-2xl text-baden-cream mb-2">

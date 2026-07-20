@@ -28,8 +28,26 @@ const Icons = {
 
 const AUDIENCES = [
   {
+    key: 'investment',
+    icon: 'growth',
+    image: conciergeImg,
+    ru: {
+      tag: 'Инвестиции',
+      title: 'Реальный актив, дробная цена',
+      copy: 'Диверсификация в средиземноморскую недвижимость без порога входа в целый объект: рост стоимости и ликвидность через долю.',
+      point: 'Доход от аренды сезона + рост цены побережья',
+    },
+    en: {
+      tag: 'Investment',
+      title: 'A real asset, at a fractional price',
+      copy: 'Diversify into Mediterranean real estate without the full-property price tag — capital appreciation and liquidity through your share.',
+      point: 'Seasonal rental income + coastal appreciation',
+    },
+  },
+  {
     key: 'relocation',
     icon: 'passport',
+    featured: true,
     image: groundsImg,
     accent: 'teal',
     ru: {
@@ -43,24 +61,6 @@ const AUDIENCES = [
       title: 'A path to Turkish residency',
       copy: 'A registered share is an accessible route toward residence permits for you and your family — at a fraction of buying a whole property.',
       point: 'Residency route without buying a whole apartment',
-    },
-  },
-  {
-    key: 'investment',
-    icon: 'growth',
-    image: conciergeImg,
-    featured: true,
-    ru: {
-      tag: 'Инвестиции',
-      title: 'Реальный актив, дробная цена',
-      copy: 'Диверсификация в средиземноморскую недвижимость без порога входа в целый объект: рост стоимости и ликвидность через долю.',
-      point: 'Доход от аренды сезона + рост цены побережья',
-    },
-    en: {
-      tag: 'Investment',
-      title: 'A real asset, at a fractional price',
-      copy: 'Diversify into Mediterranean real estate without the full-property price tag — capital appreciation and liquidity through your share.',
-      point: 'Seasonal rental income + coastal appreciation',
     },
   },
   {
@@ -97,15 +97,17 @@ const ACCENT_TEXT = {
   sea: 'text-baden-sea',
 };
 
-function Card({ a, isRu }) {
+function Card({ a, index, isRu }) {
   const accent = a.featured ? 'gold' : a.accent || 'gold';
   return (
     <motion.article
       variants={fadeUp}
       whileHover={{ y: -8 }}
       transition={{ type: 'spring', stiffness: 220, damping: 24 }}
-      className={`group relative overflow-hidden rounded-3xl border border-baden-line bg-baden-panel flex flex-col ${
-        a.featured ? 'lg:-mt-8' : ''
+      className={`group relative overflow-hidden rounded-3xl bg-baden-panel flex flex-col ${
+        a.featured
+          ? 'lg:-mt-8 border border-baden-gold-bright/40 ring-1 ring-baden-gold-bright/20 shadow-[0_0_60px_-15px_rgba(240,200,118,0.3)]'
+          : 'border border-baden-line'
       }`}
     >
       <div className="relative h-52 overflow-hidden">
@@ -118,6 +120,12 @@ function Card({ a, isRu }) {
         <div className="absolute inset-0 bg-gradient-to-t from-baden-panel via-baden-panel/40 to-transparent" aria-hidden />
         <span className="absolute top-5 left-5 inline-flex items-center gap-2 text-[11px] tracking-widest2 uppercase text-baden-cream bg-black/40 backdrop-blur-sm px-3 py-1.5 rounded-full">
           {isRu ? a.ru.tag : a.en.tag}
+        </span>
+        <span
+          className="pointer-events-none absolute bottom-2 right-4 font-display text-[4.5rem] leading-none tabular-nums text-baden-cream/10 select-none"
+          aria-hidden
+        >
+          {String(index + 1).padStart(2, '0')}
         </span>
       </div>
 
@@ -146,6 +154,12 @@ export default function Audiences() {
   const { isRu } = useLanguage();
   return (
     <section id="audiences" className="relative bg-baden-base py-24 md:py-32 overflow-hidden">
+      {/* Ambient depth so the section doesn't read as a flat panel — a teal
+          glow left, a warm gold glow behind the featured middle card. */}
+      <div className="absolute top-10 -left-24 h-[26rem] w-[24rem] rounded-full bg-baden-teal/[0.08] blur-[130px] pointer-events-none" aria-hidden />
+      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 h-[28rem] w-[28rem] rounded-full bg-baden-gold/[0.06] blur-[140px] pointer-events-none" aria-hidden />
+      <div className="absolute inset-0 opacity-[0.05] bg-grain mix-blend-overlay pointer-events-none" aria-hidden />
+
       <div className="max-w-8xl mx-auto px-6 md:px-10 relative">
         <div className="max-w-3xl mb-14 md:mb-20">
           <Reveal as="p" className="flex items-center gap-3 text-xs tracking-widest2 uppercase text-baden-gold mb-6">
@@ -167,10 +181,10 @@ export default function Audiences() {
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, amount: 0.15 }}
-          className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 items-start"
+          className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 items-stretch"
         >
-          {AUDIENCES.map((a) => (
-            <Card key={a.key} a={a} isRu={isRu} />
+          {AUDIENCES.map((a, i) => (
+            <Card key={a.key} a={a} index={i} isRu={isRu} />
           ))}
         </motion.div>
       </div>

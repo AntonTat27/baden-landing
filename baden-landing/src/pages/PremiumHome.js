@@ -33,7 +33,6 @@ export default function PremiumHome() {
       <Properties />
       <HowItWorks />
       <Audiences />
-      <LegalTrust />
       <LeadSection />
     </>
   );

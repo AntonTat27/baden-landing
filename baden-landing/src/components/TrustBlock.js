@@ -30,7 +30,7 @@ export default function TrustBlock() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 md:px-10 grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-20">
+      <div className="max-w-7xl mx-auto px-6 md:px-10 grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-20 items-center">
         <Reveal>
           <p className="text-xs tracking-widest2 uppercase text-baden-gold mb-4">
             {isRu ? 'О компании' : 'About us'}
