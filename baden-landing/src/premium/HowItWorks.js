@@ -1,147 +1,258 @@
-import React, { useRef } from 'react';
-import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion';
+import React, { useState } from 'react';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { useLanguage } from '../context/LanguageContext';
 import { OWNERSHIP_MODELS } from '../data/units';
-import { Reveal, RevealLines, fadeUp } from './motion';
+import { VILLA_IMG, RESIDENCES_IMG, HOTEL_IMG, positionFor } from '../assets/imagePositions';
+import { Reveal, RevealLines, EASE } from './motion';
+import OwnershipVisualizer from './OwnershipVisualizer';
 
-// Model-agnostic — the same four steps apply whether a given property is
-// sold as a full purchase, a fractional share, or a timeshare. Step 2 names
-// all three instruments rather than assuming a share/TAPU for everyone.
-const STEPS = [
-  {
-    ru: { title: 'Выберите объект и способ владения', body: 'Не у каждого объекта есть все три варианта — сначала смотрим, что доступно именно там.' },
-    en: { title: 'Choose a property and a model', body: 'Not every property offers all three — we start with what is actually available there.' },
+// The ownership legend, on the dark surface. Reused wherever ownership type
+// appears (residence-card dots in Properties, this row switcher, the donut in
+// OwnershipVisualizer, the document bullets in LegalTrust). The `accent` key
+// on each OWNERSHIP_MODELS entry (data/units.js) is the single source of
+// truth these maps key off of.
+//
+// These are own-* tokens, never brand-*. The distinction is load-bearing: the
+// brand accent means "you can click this", these three mean "this is how the
+// property is sold" — three distinct hues (gold/teal/rust), since this is
+// data encoding for three different legal things, not a decorative accent.
+// `glow` replaces a flat `tint` fill: a soft radial spotlight seated at the
+// row's left edge (where the colour bar already lives) rather than an even
+// wash across the whole row, so the active row's own background visibly
+// varies left-to-right instead of being one flat tinted rectangle — the
+// highlight actually points at something (the bar + label) rather than just
+// recolouring a box.
+const ACCENT = {
+  full: {
+    text: 'text-baden-own-full',
+    bar: 'bg-baden-own-full',
+    border: 'border-baden-own-full/60',
+    glow: 'radial-gradient(120% 140% at 0% 50%, rgba(217,166,83,0.16) 0%, rgba(217,166,83,0.04) 45%, transparent 75%)',
   },
-  {
-    ru: { title: 'Оформите — ТАПУ под ваш формат владения', body: 'Полный ТАПУ при полном владении, долевой ТАПУ при дробном, или контракт на недели при таймшере.' },
-    en: { title: 'Register it — a TAPU that matches the model', body: 'A full TAPU for full ownership, a shared TAPU for a fractional stake, or a timeshare contract for set weeks.' },
+  fractional: {
+    text: 'text-baden-own-frac',
+    bar: 'bg-baden-own-frac',
+    border: 'border-baden-own-frac/60',
+    glow: 'radial-gradient(120% 140% at 0% 50%, rgba(79,165,172,0.16) 0%, rgba(79,165,172,0.04) 45%, transparent 75%)',
   },
-  {
-    ru: { title: 'Пользуйтесь', body: 'Свой дом — в любое время. Доля или таймшер — свои недели каждый год. Управление и сервис на месте.' },
-    en: { title: 'Use it', body: 'Full owners come and go as they please; shares and timeshares come with set weeks each year. On-site management either way.' },
+  timeshare: {
+    text: 'text-baden-own-share',
+    bar: 'bg-baden-own-share',
+    border: 'border-baden-own-share/60',
+    glow: 'radial-gradient(120% 140% at 0% 50%, rgba(204,112,133,0.16) 0%, rgba(204,112,133,0.04) 45%, transparent 75%)',
   },
-  {
-    ru: { title: 'Продайте или передайте', body: 'ТАПУ или таймшер-контракт — каждый формат передаётся и наследуется, как любая недвижимость.' },
-    en: { title: 'Resell or pass it on', body: 'A TAPU or a timeshare contract — either transfers and is inheritable, the same as any real estate.' },
-  },
-];
-
-const MODEL_ACCENT = {
-  gold: { bar: 'bg-baden-gold-bright', text: 'text-baden-gold-bright', glow: 'bg-baden-gold-bright/[0.07]' },
-  sea: { bar: 'bg-baden-sea', text: 'text-baden-sea', glow: 'bg-baden-sea/[0.07]' },
-  teal: { bar: 'bg-baden-teal', text: 'text-baden-teal', glow: 'bg-baden-teal/[0.07]' },
 };
 
-// The three-model explainer — folded into this section rather than broken
-// out on its own. Each model is a card with its own accent edge, so the three
-// ways to own read as distinct choices rather than three lines of small text.
-function OwnershipModels({ isRu }) {
-  return (
-    <div className="space-y-4">
-      {Object.entries(OWNERSHIP_MODELS).map(([key, m]) => {
-        const a = MODEL_ACCENT[m.accent] || MODEL_ACCENT.gold;
-        return (
-          <div
-            key={key}
-            className="group relative overflow-hidden rounded-2xl border border-baden-line bg-baden-panel/60 pl-5 pr-5 py-4 transition-colors duration-300 hover:border-baden-cream/20"
-          >
-            <span className={`absolute left-0 top-0 bottom-0 w-1 ${a.bar}`} aria-hidden />
-            <span className={`absolute -right-8 -top-8 h-24 w-24 rounded-full blur-2xl ${a.glow}`} aria-hidden />
-            <p className={`text-xs font-medium tracking-widest2 uppercase mb-1.5 ${a.text}`}>
-              {isRu ? m.ru.label : m.en.label}
-            </p>
-            <p className="text-sm text-baden-muted leading-relaxed">{isRu ? m.ru.def : m.en.def}</p>
-          </div>
-        );
-      })}
-    </div>
-  );
-}
+// A representative photo per model, reused from the residences section
+// (VILLA_IMG is Villa Aurelia, sold as full ownership; RESIDENCES_IMG is
+// Marea's shared infinity pool, sold fractionally; HOTEL_IMG is Beyzade
+// Resort, sold as timeshare) rather than new stock — grounds each abstract
+// legal concept in an actual Baden place.
+const MODEL_IMAGE = { full: VILLA_IMG, fractional: RESIDENCES_IMG, timeshare: HOTEL_IMG };
 
-// Vertical progress rail that fills as the steps scroll past.
-function Rail() {
-  const ref = useRef(null);
-  const { scrollYProgress } = useScroll({ target: ref, offset: ['start 70%', 'end 60%'] });
-  const scaleY = useTransform(scrollYProgress, [0, 1], [0, 1]);
+// 2-3 plain sentences + 2-3 checkmark benefit lines per model — the same
+// "here's what this means for you" pattern already used in Audiences.js,
+// replacing the old 01-04 numbered step list (that read as a process to
+// complete rather than a choice to understand).
+const MODEL_DETAILS = {
+  full: {
+    ru: {
+      body: 'Резиденция становится вашей полностью, без выделенных недель и без совладельцев. Полный ТАПУ оформляется на ваше имя, а дом в вашем распоряжении круглый год.',
+      benefits: ['Единоличное владение, никаких графиков', 'Свободная продажа или передача по наследству', 'Доступен в любое время года'],
+    },
+    en: {
+      body: 'The residence becomes fully yours, with no shared calendar and no co-owners. A full TAPU is registered in your name, and the property is yours year-round.',
+      benefits: ['Sole ownership, no calendar to share', 'Free resale or inheritance', 'Available any time of year'],
+    },
+  },
+  fractional: {
+    ru: {
+      body: 'Официально зарегистрированная доля в объекте: ТАПУ на ваше имя и собственные недели каждый год. Дешевле полной покупки, но с теми же правами: продать, передать, сдать.',
+      benefits: ['ТАПУ на долю, официальное право собственности', 'Свои недели закреплены каждый год', 'Доход от аренды сезона + рост цены побережья'],
+    },
+    en: {
+      body: 'A legally registered share of the property: a title (TAPU) in your name, with set weeks every year. Cheaper than buying outright, with the same rights: sell it, pass it on, rent it out.',
+      benefits: ['A registered TAPU, real title rather than a contract', 'Your own weeks, locked in every year', 'Seasonal rental income + coastal appreciation'],
+    },
+  },
+  timeshare: {
+    ru: {
+      body: 'Право пользования определёнными неделями каждый год. Самый доступный порог входа в портфель Baden. Управление, клининг и сервис на месте уже включены.',
+      benefits: ['Низкий порог входа', 'Управление и клининг включены', 'Недели закреплены по договору'],
+    },
+    en: {
+      body: 'The right to use specific weeks every year. The most accessible entry point into the Baden portfolio. On-site management, cleaning, and service are already included.',
+      benefits: ['The lowest entry point in the portfolio', 'Management and cleaning included', 'Weeks locked in by contract'],
+    },
+  },
+};
+
+const CheckIcon = ({ className }) => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className={className}>
+    <path d="M20 6L9 17l-5-5" />
+  </svg>
+);
+
+// Each ownership type is a full-width row that is simultaneously the tab
+// control and the content: the label + one-line definition are always
+// visible (so an inactive row is still communicating something), and
+// clicking expands 2-3 sentences, a few checkmark benefits, and a small
+// representative photo directly beneath it — accordion-style, like the
+// Audiences scenario list, rather than a separate tab bar sitting above a
+// card.
+function ModelRow({ modelKey, m, active, onSelect, isRu, reduce }) {
+  const a = ACCENT[m.accent];
+  const d = MODEL_DETAILS[modelKey][isRu ? 'ru' : 'en'];
+
   return (
-    <div ref={ref} className="absolute left-0 top-0 bottom-0 w-px bg-baden-cream/10 hidden md:block">
-      <motion.div style={{ scaleY, transformOrigin: 'top' }} className="absolute inset-0 bg-baden-gold-bright" />
+    <div
+      className={`relative flex border rounded-panel overflow-hidden transition-colors duration-300 ${
+        active ? a.border : 'border-baden-line'
+      }`}
+      style={{ background: active ? a.glow : 'transparent' }}
+    >
+      <span className={`w-1 shrink-0 ${a.bar}`} aria-hidden />
+      <div className="flex-1">
+        <button type="button" onClick={() => onSelect(modelKey)} aria-expanded={active} className="w-full text-left px-5 md:px-7 py-5 md:py-6">
+          <span className={`block font-display text-xl md:text-2xl mb-1 transition-colors duration-300 ${active ? a.text : 'text-baden-on-dark/75'}`}>
+            {isRu ? m.ru.label : m.en.label}
+          </span>
+          <span className="block text-sm text-baden-on-dark/60 leading-relaxed max-w-lg">
+            {isRu ? m.ru.def : m.en.def}
+          </span>
+        </button>
+
+        <AnimatePresence initial={false}>
+          {active && (
+            <motion.div
+              key="content"
+              initial={reduce ? false : { height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={reduce ? undefined : { height: 0, opacity: 0 }}
+              transition={{ duration: 0.5, ease: EASE, opacity: { duration: 0.35 } }}
+              className="overflow-hidden"
+            >
+              <div className="px-5 md:px-7 pb-6 md:pb-7 flex flex-col sm:flex-row gap-5 md:gap-7">
+                <div className="flex-1">
+                  <p className="text-sm md:text-base text-baden-on-dark/80 leading-relaxed mb-4">{d.body}</p>
+                  <ul className="space-y-2">
+                    {d.benefits.map((b, i) => (
+                      <li key={i} className="flex items-start gap-2.5 text-sm text-baden-on-dark/85">
+                        <CheckIcon className={`h-4 w-4 shrink-0 mt-0.5 ${a.text}`} />
+                        {b}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <div className="relative shrink-0 w-full sm:w-40 md:w-48 h-32 sm:h-auto rounded-panel overflow-hidden">
+                  <img
+                    src={MODEL_IMAGE[modelKey]}
+                    alt=""
+                    className="absolute inset-0 h-full w-full object-cover"
+                    style={{ objectPosition: positionFor(MODEL_IMAGE[modelKey]) }}
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" aria-hidden />
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
     </div>
   );
 }
 
 export default function HowItWorks() {
   const { isRu } = useLanguage();
+  const [model, setModel] = useState('full');
+  const reduce = useReducedMotion();
 
+  // RHYTHM: py-28/py-36 against Properties' py-20/py-28 above. This is the
+  // page's numbers/mechanics section, so it sits on the deepest ground
+  // (baden-dark), not a lighter "raised panel" step — a deliberate contrast
+  // against Properties' light ivory just above it, not one more shade in a
+  // navy gradient. Separation from Properties also gets a hairline at the
+  // join, a different vertical measure, the ambient photo grain below, and a
+  // centred header where Properties' is left-aligned.
   return (
-    <section id="how-it-works" className="relative bg-baden-panel2 py-24 md:py-32 overflow-hidden">
-      <div className="absolute top-0 right-0 h-[26rem] w-[22rem] rounded-full bg-baden-gold/[0.06] blur-[110px] pointer-events-none" aria-hidden />
+    <section
+      id="how-it-works"
+      className="relative bg-baden-dark border-t border-baden-line py-28 md:py-36 overflow-hidden"
+    >
+      {/* Large, heavily darkened resort photo as ambient texture rather than
+          a flat panel — barely visible, reads as atmosphere, not a picture. */}
+      <img
+        src={HOTEL_IMG}
+        alt=""
+        aria-hidden
+        className="absolute inset-0 h-full w-full object-cover opacity-[0.1] pointer-events-none"
+        style={{
+          objectPosition: positionFor(HOTEL_IMG),
+          // Masked so the photo only ever shows on the right half of the
+          // frame — the visualizer/list column on the left stays on a plain
+          // flat ground, the section's own background genuinely differs
+          // side to side rather than one uniform faint wash edge to edge.
+          maskImage: 'linear-gradient(to right, transparent 0%, transparent 38%, black 68%, black 100%)',
+          WebkitMaskImage: 'linear-gradient(to right, transparent 0%, transparent 38%, black 68%, black 100%)',
+        }}
+      />
+      <div className="absolute inset-0 bg-baden-dark/85 pointer-events-none" aria-hidden />
+      {/* PERF: blur-[110px] reduced to blur-[60px] on a slightly larger,
+          slightly fainter disc — visually the same wash, a much smaller
+          offscreen surface to composite. */}
+      <div className="absolute top-0 right-0 h-[28rem] w-[24rem] rounded-full bg-baden-brand/[0.07] blur-[60px] pointer-events-none" aria-hidden />
 
-      {/* Heading sits centered above both columns, so it's always the first
-          thing in view — previously it lived inside the sticky left rail,
-          which meant the step list could enter the viewport before it did. */}
-      <div className="max-w-8xl mx-auto px-6 md:px-10 text-center mb-14 md:mb-20">
-        <Reveal as="p" className="flex items-center justify-center gap-3 text-xs tracking-widest2 uppercase text-baden-gold mb-6">
-          <span className="h-px w-8 bg-baden-gold" />
-          {isRu ? 'Механика' : 'The mechanics'}
-          <span className="h-px w-8 bg-baden-gold" />
-        </Reveal>
-        <h2 className="font-display font-light text-3xl md:text-5xl text-baden-cream leading-[1.04] tracking-[-0.02em] mb-6">
+      {/* The eyebrow ("Механика" / "The mechanics", flanked by two rules)
+          is gone. It was one of six near-identical section eyebrows, which is
+          what gave the page its templated rhythm; the headline already says
+          what this section is.
+
+          The accent word is no longer italic. Unbounded ships upright only,
+          so `italic` would have asked the browser to synthesise an oblique by
+          shearing the glyphs, which looks wrong at display size. Emphasis is
+          now weight in the same family, which is also the correct move
+          regardless of the font. */}
+      <div className="max-w-8xl mx-auto px-6 md:px-10 text-center mb-12 md:mb-16 relative">
+        <h2 className="font-display font-light text-3xl md:text-5xl text-baden-on-dark leading-[1.06] tracking-[-0.02em] mb-6">
           <RevealLines
             className="items-center"
-            lines={isRu ? ['Три способа', <>владеть <span className="italic text-baden-teal">недвижимостью</span></>] : ['Three ways', <>to own <span className="italic text-baden-teal">real estate</span></>]}
+            lines={isRu ? ['Три способа', <>владеть <span className="font-medium">недвижимостью</span></>] : ['Three ways', <>to own <span className="font-medium">real estate</span></>]}
           />
         </h2>
-        <Reveal className="text-sm md:text-base text-baden-muted leading-relaxed max-w-md mx-auto">
-          {isRu
-            ? 'Baden работает с тремя разными форматами. У каждого объекта — свой набор вариантов; ниже — как это работает для всех трёх.'
-            : 'Baden works across three different models. Each property offers its own subset — below is how each one actually works.'}
+        <Reveal className="text-sm md:text-base text-baden-on-dark/70 leading-relaxed max-w-md mx-auto">
+          {isRu ? 'Выберите формат. Ниже то, что он означает для вас.' : 'Pick a model. Below is what it actually means for you.'}
         </Reveal>
       </div>
 
-      <div className="max-w-8xl mx-auto px-6 md:px-10 grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-16">
-        <div className="md:col-span-5 md:sticky md:top-28 md:self-start">
-          <OwnershipModels isRu={isRu} />
-        </div>
+      <div className="max-w-6xl mx-auto px-6 md:px-10 relative grid md:grid-cols-[260px_1fr] gap-10 md:gap-14 items-start">
+        {/* The signature interaction (guide §5): one ring standing in for a
+            property visibly divides as the model row changes — teaches the
+            mechanic instead of just describing it. */}
+        <Reveal className="flex justify-center md:justify-start md:sticky md:top-28" amount={0.2}>
+          <OwnershipVisualizer model={model} isRu={isRu} size={240} />
+        </Reveal>
 
-        <div className="md:col-span-7 relative md:pl-10">
-          <Rail />
-          <motion.ol
-            variants={{ hidden: {}, show: { transition: { staggerChildren: 0.12 } } }}
-            initial="hidden"
-            whileInView="show"
-            viewport={{ once: true, amount: 0.15 }}
-            className="flex flex-col"
-          >
-            {STEPS.map((step, i) => (
-              <motion.li
-                key={i}
-                variants={fadeUp}
-                className="group relative border-t border-baden-cream/10 last:border-b py-8 md:py-11 md:pl-8"
-              >
-                <span className="hidden md:block absolute -left-[5px] top-11 h-2.5 w-2.5 rounded-full bg-baden-gold-bright ring-4 ring-baden-panel2" aria-hidden />
-                {/* Oversized ghost numeral for depth — sits behind the copy,
-                    warms to gold on hover. */}
-                <span
-                  className="pointer-events-none absolute right-0 -top-2 font-display text-[5.5rem] md:text-[7rem] leading-none tabular-nums text-baden-cream/[0.05] group-hover:text-baden-gold-bright/[0.10] transition-colors duration-500 select-none"
-                  aria-hidden
-                >
-                  {String(i + 1).padStart(2, '0')}
-                </span>
-                <div className="relative flex items-baseline gap-5">
-                  <span className="font-display text-2xl tabular-nums text-baden-gold-bright/80">{String(i + 1).padStart(2, '0')}</span>
-                  <div>
-                    <h3 className="font-display text-xl md:text-2xl text-baden-cream mb-2">
-                      {isRu ? step.ru.title : step.en.title}
-                    </h3>
-                    <p className="text-sm md:text-base text-baden-muted max-w-md leading-relaxed">
-                      {isRu ? step.ru.body : step.en.body}
-                    </p>
-                  </div>
-                </div>
-              </motion.li>
+        <div className="flex flex-col gap-3 md:gap-4">
+          <Reveal>
+            {Object.entries(OWNERSHIP_MODELS).map(([key, m]) => (
+              <div key={key} className="mb-3 md:mb-4 last:mb-0">
+                <ModelRow modelKey={key} m={m} active={key === model} onSelect={setModel} isRu={isRu} reduce={reduce} />
+              </div>
             ))}
-          </motion.ol>
+          </Reveal>
+
+          <Reveal className="mt-2 text-center md:text-left">
+            <a
+              href="#contact"
+              onClick={(e) => {
+                e.preventDefault();
+                document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="inline-flex items-center gap-2 text-xs tracking-widest uppercase text-baden-brand-bright border-b border-baden-brand/40 pb-0.5 hover:border-baden-brand hover:text-baden-brand transition-colors duration-200"
+            >
+              {isRu ? 'Не уверены, что подходит? Спросите нас' : "Not sure which fits? Ask us"} <span aria-hidden>→</span>
+            </a>
+          </Reveal>
         </div>
       </div>
     </section>

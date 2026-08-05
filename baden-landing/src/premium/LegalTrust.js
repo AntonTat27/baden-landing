@@ -1,9 +1,10 @@
 import React from 'react';
 import { useLanguage } from '../context/LanguageContext';
-import { Reveal, RevealLines, fadeUp, motion } from './motion';
+import { Reveal, RevealLines } from './motion';
+import groundsImg from '../assets/images/image.png';
 
-// The transaction, as a factual sequence — reinforces the "proper way"
-// message with the actual process, no invented figures.
+// The transaction, as a factual sequence — kept to labels only, no
+// per-step descriptions.
 const PROCESS = [
   { ru: 'Проверка объекта', en: 'Due diligence' },
   { ru: 'Нотариус', en: 'Notary' },
@@ -11,126 +12,204 @@ const PROCESS = [
   { ru: 'Передача владения', en: 'Handover' },
 ];
 
-const POINTS = [
-  {
-    ru: { t: 'Официальный ТАПУ', d: 'Право собственности регистрируется в кадастре Турции и заверяется у нотариуса.' },
-    en: { t: 'Official TAPU deed', d: 'Ownership is registered in the Turkish land registry and notarized.' },
-  },
-  {
-    ru: { t: 'Сопровождение сделки', d: 'Юрист ведёт вас на каждом этапе — от проверки до передачи доли.' },
-    en: { t: 'Guided transaction', d: 'A lawyer walks you through every stage — from due diligence to transfer.' },
-  },
-  {
-    ru: { t: 'Полная документация', d: 'Договор, доля и права пользования зафиксированы письменно.' },
-    en: { t: 'Full documentation', d: 'The contract, share, and usage rights are all recorded in writing.' },
-  },
+// Short badges, no sentences — the detail lives in the documents below
+// instead of being spelled out here.
+const BADGES = [
+  { ru: 'Официальный ТАПУ', en: 'Official TAPU' },
+  { ru: 'Юрист на сделке', en: 'Lawyer on every deal' },
+  { ru: 'Полная документация', en: 'Full documentation' },
 ];
 
+// What's in the document pack. The three ownership-type contracts
+// (full/fractional/timeshare) carry the SAME accent keys ('gold' | 'teal' |
+// 'rust') as OWNERSHIP_MODELS in src/data/units.js, and the same accent map
+// used by Properties.js / HowItWorks.js / OwnershipVisualizer.js — kept in
+// sync deliberately so a visitor learns "gold = full, teal = fractional,
+// rust = timeshare" once and it holds everywhere. The company profile /
+// price list are not ownership-type documents, so they stay neutral
+// (accent: null).
+//
+// These used to render as five rows, each with its own disabled "СКОРО"
+// download button. Five dead CTAs in a column is the single least persuasive
+// thing you can put in a section whose entire job is to establish that this
+// is a real company with real paperwork — it reads as "nothing here yet"
+// five times over. Same information, stated once and honestly: this is what
+// the pack contains, and you get it by asking. No download affordance at all
+// until there are actual files to download.
+const DOCS = [
+  { key: 'full', accent: 'full', ru: 'Договор: полное владение', en: 'Full ownership: sample contract' },
+  { key: 'fractional', accent: 'fractional', ru: 'Договор: дробное владение (ТАПУ)', en: 'Fractional ownership: TAPU agreement' },
+  { key: 'timeshare', accent: 'timeshare', ru: 'Договор: таймшер', en: 'Timeshare: usage agreement' },
+  { key: 'profile', accent: null, ru: 'О компании Baden Premium Projects', en: 'Baden Premium Projects: company profile' },
+  { key: 'pricing', accent: null, ru: 'Прайс-лист и условия оплаты', en: 'Price list & payment terms' },
+];
+
+// Same three-color ownership system as Properties.js / HowItWorks.js /
+// OwnershipVisualizer.js (see src/data/units.js OWNERSHIP_MODELS). This
+// section sits on the DARK surface, like Properties, so the marker uses the
+// dark-surface-weight variants rather than the -ink ones.
+const ACCENT_DOT = {
+  full: 'bg-baden-own-full',
+  fractional: 'bg-baden-own-frac',
+  timeshare: 'bg-baden-own-share',
+};
+
+// Documents & legal — one of the page's light beats (alongside Properties
+// and Audiences; Statement moved back to dark navy). Sits on baden-ivory
+// rather than another navy shade, deliberate against a page that otherwise
+// cycles dark/dark-2/dark-3/black: a trust/legal section reading like an
+// actual paper deed is a better fit for the content than one more dark
+// panel.
+//
+// Structural notes carried over from the previous pass: the reading column
+// stays `max-w-3xl`-equivalent (`max-w-7xl` grid, prose capped per-block)
+// rather than the page's default `max-w-8xl`, and vertical rhythm is kept
+// tight (mb-10/12, mb-12/16) rather than the ~200px gaps an earlier version
+// had.
+//
+// NEW — the architectural render breaks the grid on purpose: every other
+// image on the page sits inside its section's max-width column, so this one
+// runs wider than the text above and below it (its own `max-w-[100rem]`
+// wrapper, outside the `max-w-7xl` reading column). One deliberate width
+// break is a considered layout choice; the same trick on every section would
+// just be a new default.
 export default function LegalTrust() {
   const { isRu } = useLanguage();
   return (
-    <section className="relative bg-baden-panel2 py-24 md:py-32 overflow-hidden">
-      {/* Ambient depth + faint diagonal, matching the treatment on the other
-          sections so this one doesn't read as a bare panel. */}
-      <div className="absolute -bottom-24 -left-20 h-[26rem] w-[24rem] rounded-full bg-baden-teal/[0.07] blur-[130px] pointer-events-none" aria-hidden />
-      <div className="absolute -top-24 right-0 h-[24rem] w-[22rem] rounded-full bg-baden-gold/[0.06] blur-[120px] pointer-events-none" aria-hidden />
-      <div className="absolute inset-0 opacity-[0.05] bg-grain mix-blend-overlay pointer-events-none" aria-hidden />
+    <section id="trust" className="relative overflow-hidden bg-baden-ivory py-24 md:py-36">
+      <div className="mx-auto max-w-7xl px-6 relative md:px-10">
+        <h2 className="mb-6 max-w-4xl font-display text-3xl font-light leading-[1.1] tracking-tight text-baden-ink md:text-5xl">
+          <RevealLines
+            lines={
+              isRu
+                ? ['Каждая сделка проходит через нотариуса и заканчивается ТАПУ на ваше имя.']
+                : ['Every deal goes through a notary and ends with a TAPU registered in your name.']
+            }
+          />
+        </h2>
 
-      <div className="max-w-8xl mx-auto px-6 md:px-10 grid grid-cols-1 lg:grid-cols-2 gap-14 lg:gap-20 items-center relative">
-        {/* Deed / seal graphic */}
-        <Reveal className="order-2 lg:order-1">
-          <div className="relative mx-auto max-w-md aspect-[4/5] rounded-2xl border border-baden-line bg-gradient-to-br from-baden-panel to-baden-base p-8 md:p-10 overflow-hidden">
-            <div className="absolute inset-0 opacity-[0.15] bg-grain" aria-hidden />
-            <div className="relative flex flex-col h-full">
-              <div className="flex items-center justify-between mb-8">
-                <span className="text-[11px] tracking-widest2 uppercase text-baden-muted">TAPU · ТАПУ</span>
-                <span className="text-[11px] tracking-widest2 uppercase text-baden-muted">Antalya</span>
-              </div>
-              <div className="space-y-3 flex-1">
-                {[92, 74, 84, 60, 78].map((w, i) => (
-                  <div key={i} className="h-2.5 rounded-full bg-baden-cream/8" style={{ width: `${w}%` }} />
-                ))}
-              </div>
-              {/* Rotating seal */}
-              <div className="mt-8 flex items-center gap-4">
-                <div className="relative h-20 w-20 shrink-0">
-                  <motion.svg
-                    viewBox="0 0 100 100"
-                    className="absolute inset-0 h-full w-full text-baden-gold-bright/70"
-                    animate={{ rotate: 360 }}
-                    transition={{ duration: 34, ease: 'linear', repeat: Infinity }}
-                  >
-                    <defs>
-                      <path id="sealpath" d="M50,50 m-34,0 a34,34 0 1,1 68,0 a34,34 0 1,1 -68,0" />
-                    </defs>
-                    <text fontSize="8" letterSpacing="2.5" fill="currentColor" className="uppercase font-grotesk">
-                      <textPath href="#sealpath">BADEN PREMIUM PROJECTS · ANTALYA · TÜRKIYE ·</textPath>
-                    </text>
-                  </motion.svg>
-                  <span className="absolute inset-0 flex items-center justify-center">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" className="h-7 w-7 text-baden-gold-bright">
-                      <path d="M20 6L9 17l-5-5" />
-                    </svg>
-                  </span>
-                </div>
-                <div>
-                  <p className="font-display text-lg text-baden-cream">{isRu ? 'Доля зарегистрирована' : 'Share registered'}</p>
-                  <p className="text-xs text-baden-muted">{isRu ? 'на имя собственника' : "in the owner's name"}</p>
-                </div>
-              </div>
-            </div>
-          </div>
+        {/* Short trust badges in simple row */}
+        <Reveal className="mb-10 flex flex-wrap items-center gap-x-8 gap-y-2">
+          {BADGES.map((b, i) => (
+            <span key={i} className="inline-flex items-center gap-2 text-xs text-baden-ink/60 md:text-sm">
+              <span className="h-1.5 w-1.5 rounded-full bg-baden-brand-deep" />
+              {isRu ? b.ru : b.en}
+            </span>
+          ))}
         </Reveal>
 
-        <div className="order-1 lg:order-2">
-          <Reveal as="p" className="flex items-center gap-3 text-xs tracking-widest2 uppercase text-baden-gold mb-6">
-            <span className="h-px w-8 bg-baden-gold" />
-            {isRu ? 'Юридическая прозрачность' : 'Legal transparency'}
-          </Reveal>
-          <h2 className="font-display font-light text-3xl md:text-5xl text-baden-cream leading-[1.04] tracking-[-0.02em] mb-8">
-            <RevealLines lines={isRu ? ['Собственность,', <>оформленная <span className="italic text-baden-gold-bright">по закону</span></>] : ['Ownership, registered', <>the <span className="italic text-baden-gold-bright">proper way</span></>]} />
-          </h2>
-
-          <motion.ul
-            variants={{ hidden: {}, show: { transition: { staggerChildren: 0.1 } } }}
-            initial="hidden"
-            whileInView="show"
-            viewport={{ once: true, amount: 0.3 }}
-            className="space-y-6"
-          >
-            {POINTS.map((p, i) => (
-              <motion.li key={i} variants={fadeUp} className="flex gap-4">
-                <span className="mt-1 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-baden-teal/25 text-baden-teal">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" className="h-4 w-4">
-                    <path d="M20 6L9 17l-5-5" />
-                  </svg>
-                </span>
-                <div>
-                  <p className="font-display text-lg text-baden-cream mb-1">{isRu ? p.ru.t : p.en.t}</p>
-                  <p className="text-sm text-baden-muted leading-relaxed max-w-md">{isRu ? p.ru.d : p.en.d}</p>
+        {/* Process timeline — minimal typographic timeline */}
+        <Reveal className="mb-16 max-w-4xl md:mb-24">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-2">
+            {PROCESS.map((p, i) => (
+              <React.Fragment key={i}>
+                <div className="flex items-center gap-3">
+                  <span className="font-display text-xs tabular-nums text-baden-brand-deep/70">{String(i + 1).padStart(2, '0')}</span>
+                  <span className="text-[11px] tracking-widest2 uppercase text-baden-ink/70">{isRu ? p.ru : p.en}</span>
                 </div>
-              </motion.li>
+                {i < PROCESS.length - 1 && (
+                  <span className="mx-2 hidden h-px flex-1 bg-baden-ink-line sm:block" aria-hidden />
+                )}
+              </React.Fragment>
             ))}
-          </motion.ul>
+          </div>
+        </Reveal>
+      </div>
+
+      {/* Large architectural render — the one deliberate width break (see
+          header note): its own wider column, not the section's max-w-7xl. */}
+      <div className="mx-auto mb-16 max-w-[100rem] px-4 md:mb-24 md:px-8">
+        <div className="group relative aspect-[21/9] w-full overflow-hidden rounded-panel md:aspect-[2.6/1]">
+          <img
+            src={groundsImg}
+            alt="Baden architectural grounds render"
+            className="h-full w-full object-cover opacity-90 grayscale-[0.15] transition-all duration-[1200ms] ease-out group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-[1.01]"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-baden-ink/45 via-transparent to-transparent" />
         </div>
       </div>
 
-      {/* Process timeline strip — the sequence, from first look to keys. */}
-      <Reveal className="max-w-8xl mx-auto px-6 md:px-10 mt-16 md:mt-24 relative">
-        <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-2 border-t border-baden-line pt-8">
-          {PROCESS.map((p, i) => (
-            <React.Fragment key={i}>
-              <div className="flex items-center gap-3">
-                <span className="font-display text-sm tabular-nums text-baden-gold-bright/70">{String(i + 1).padStart(2, '0')}</span>
-                <span className="text-xs md:text-sm tracking-wide uppercase text-baden-cream/80">{isRu ? p.ru : p.en}</span>
-              </div>
-              {i < PROCESS.length - 1 && (
-                <span className="hidden sm:block flex-1 h-px bg-baden-line mx-2" aria-hidden />
-              )}
-            </React.Fragment>
-          ))}
+      <div className="relative mx-auto max-w-7xl px-6 md:px-10">
+        {/* Developer Story — Staggered Editorial Hero.
+            Baden Premium Projects IS a German company — kept to one plain
+            sentence rather than spelling out the corporate structure. */}
+        <div className="mb-20 grid grid-cols-1 items-start gap-8 md:mb-28 md:gap-16 lg:grid-cols-12">
+          <div className="lg:col-span-6">
+            <span className="mb-3 block text-xs uppercase tracking-widest3 text-baden-brand-deep">
+              {isRu ? 'Немецкая компания' : 'A German Company'}
+            </span>
+            <h3 className="font-display font-light text-4xl leading-[1.05] tracking-tight text-baden-ink md:text-5xl lg:text-6xl">
+              PP Projektentwicklung GmbH
+            </h3>
+            <p className="mt-3 text-sm uppercase tracking-widest2 text-baden-ink/45">
+              {isRu ? 'Германия' : 'Germany'}
+            </p>
+          </div>
+
+          <div className="flex flex-col gap-6 md:gap-8 lg:col-span-6">
+            <p className="text-base font-light leading-relaxed text-baden-ink/65 md:text-lg">
+              {isRu
+                ? 'Baden Premium Projects — немецкая компания. Немецкое качество и инженерия — в основе каждого проекта портфеля.'
+                : 'Baden Premium Projects is a German company. German quality and engineering are at the core of every project in the portfolio.'}
+            </p>
+            <div>
+              <a
+                href="https://premium-projektentwicklung.de/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group inline-flex items-center gap-2 text-xs uppercase tracking-widest2 text-baden-brand-deep border-b border-baden-brand-deep/25 pb-1 transition-all duration-300 hover:border-baden-brand-deep"
+              >
+                {isRu ? 'Официальный сайт' : 'Developer Website'}
+                <span className="transition-transform duration-300 group-hover:translate-x-1" aria-hidden>→</span>
+              </a>
+            </div>
+          </div>
         </div>
-      </Reveal>
+
+        {/* Document Pack — sits on its own faint ivory-2 tint, the one
+            partial-background variation inside this section: a panel one
+            shade deeper than the page, not another dark box. */}
+        <div className="grid grid-cols-1 gap-8 rounded-panel border border-baden-ink-line bg-baden-ivory-2/60 p-6 md:gap-16 md:p-10 lg:grid-cols-12">
+          <div className="lg:col-span-4">
+            <h4 className="mb-3 font-display text-2xl font-light text-baden-ink">
+              {isRu ? 'Пакет документов' : 'The Document Pack'}
+            </h4>
+            <p className="max-w-sm text-sm leading-relaxed text-baden-ink/55">
+              {isRu
+                ? 'Все материалы предоставляются по запросу, вместе с финансовым расчетом по выбранному объекту.'
+                : 'All materials are available upon request, complete with financial breakdowns for your selected unit.'}
+            </p>
+          </div>
+
+          <div className="flex flex-col gap-8 lg:col-span-8">
+            <ul className="grid grid-cols-1 gap-x-12 gap-y-4 sm:grid-cols-2">
+              {DOCS.map((doc) => (
+                <li key={doc.key} className="flex items-start gap-3 py-1 text-sm text-baden-ink/85">
+                  <span
+                    className={`mt-2 h-1.5 w-1.5 shrink-0 rounded-full ${doc.accent ? ACCENT_DOT[doc.accent] : 'bg-baden-ink/25'}`}
+                    aria-hidden
+                  />
+                  <span className="font-sans leading-tight">{isRu ? doc.ru : doc.en}</span>
+                </li>
+              ))}
+            </ul>
+
+            <div className="pt-4">
+              <a
+                href="#contact"
+                onClick={(e) => {
+                  e.preventDefault();
+                  document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="group inline-flex items-center gap-2 text-xs uppercase tracking-widest2 text-baden-ink/65 border-b border-baden-ink-line pb-1 transition-all duration-300 hover:border-baden-ink/50 hover:text-baden-ink"
+              >
+                {isRu ? 'Запросить пакет документов' : 'Request documents pack'}
+                <span className="transition-transform duration-300 group-hover:translate-x-1" aria-hidden>→</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
   );
 }

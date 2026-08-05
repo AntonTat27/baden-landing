@@ -1,9 +1,18 @@
-import React, { createContext, useContext, useMemo, useState } from 'react';
+import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
 
 const LanguageContext = createContext(null);
 
 export function LanguageProvider({ children }) {
   const [lang, setLang] = useState('ru');
+
+  // Keep <html lang> in step with the toggle. public/index.html declares
+  // lang="ru" as the document default, which was correct for the Russian
+  // page and wrong for the English one: the whole site claimed to be Russian
+  // regardless of what was on screen, which affects screen-reader
+  // pronunciation, browser translation prompts, and hyphenation.
+  useEffect(() => {
+    document.documentElement.lang = lang;
+  }, [lang]);
 
   const value = useMemo(
     () => ({

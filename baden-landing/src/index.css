@@ -14,85 +14,51 @@
 
   body {
     margin: 0;
-    background-color: #0a0d12;
-    color: #f5f1e8;
-    font-family: 'General Sans', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+    /* baden.dark / baden.on-dark (Coastal Night v3 — charcoal-navy). */
+    background-color: #0b1220;
+    color: #f5f3ee;
+    font-family: 'Onest', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
 
   ::selection {
-    background-color: #d9b36a;
-    color: #0a0d12;
+    /* gold fill, ink text: 8.90:1. */
+    background-color: #d4af37;
+    color: #0b1220;
+  }
+
+  /* Focus is a brand-accent job. Previously there was no global focus style
+     at all, so keyboard users got the UA default, near-invisible on dark. */
+  :focus-visible {
+    outline: 2px solid #d4af37;
+    outline-offset: 2px;
+    border-radius: 2px;
   }
 }
 
 @layer utilities {
-  /* Editorial display serif — the premium anchor. Matches tailwind font-display. */
+  /* Display face. Spectral ships the base cyrillic block (verified against
+     the live Google Fonts CSS2 API); Playfair Display, which this
+     replaces, carried the right script but its ornamental high-contrast
+     cut read as resort-brochure script rather than a considered document
+     against a dark ground. */
   .font-display {
-    font-family: 'Fraunces', ui-serif, Georgia, serif;
-  }
-  .font-grotesk {
-    font-family: 'Golos Text', ui-sans-serif, system-ui, sans-serif;
-  }
-  .font-accent {
-    font-family: 'Instrument Serif', ui-serif, Georgia, serif;
+    font-family: 'Spectral', ui-serif, Georgia, serif;
   }
   /* Subtle film grain overlay — adds depth over flat dark fields */
   .bg-grain {
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
   }
-  .text-balance {
-    text-wrap: balance;
-  }
-  /* Horizontal card rails (Properties) — snap scroll, hidden scrollbar */
+  /* Hides the scrollbar on swipeable rails (Properties) that already have
+     their own arrow controls — the native bar underneath is redundant there
+     and, on a rail that peeks the next card, visually noisy. */
   .no-scrollbar {
     scrollbar-width: none;
     -ms-overflow-style: none;
   }
   .no-scrollbar::-webkit-scrollbar {
     display: none;
-  }
-}
-
-@keyframes fadein {
-  from {
-    opacity: 0;
-    transform: translateY(4px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Auto-advance timer under the active WhySelector tab */
-@keyframes tabprogress {
-  from {
-    transform: scaleX(0);
-  }
-  to {
-    transform: scaleX(1);
-  }
-}
-
-/* Ghost-text brand marquee (TrustBlock) — content is duplicated once, so
-   translating by -50% loops seamlessly */
-@keyframes marquee {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-50%);
-  }
-}
-
-@keyframes scrollcue {
-  0% {
-    transform: translateY(-100%);
-  }
-  100% {
-    transform: translateY(200%);
   }
 }
 
@@ -108,14 +74,31 @@
   }
 }
 
-/* Very slow horizontal breathing on Listings panel images — scale stays
-   constant so it reads as a drift, not a zoom pump. */
-@keyframes driftx {
+/* Amenities showcase — slow Ken Burns zoom per slide visit: scale(1.0) ->
+   scale(1.08) over ~8s, holding on the final frame via `forwards`. */
+@keyframes kenburns-slide {
   from {
-    transform: scale(1.08) translate3d(-1.4%, 0, 0);
+    transform: scale(1);
   }
   to {
-    transform: scale(1.08) translate3d(1.4%, 0, 0);
+    transform: scale(1.08);
+  }
+}
+
+/* Amenities showcase crossfade. A @keyframes animation rather than a
+   CSS *transition* deliberately: a transition needs a JS-established
+   "before" style painted on an earlier frame before the "after" style can
+   animate toward it, which in practice meant a double-rAF dance to dodge
+   React batching a same-frame 0->1 flip into a no-op — and it still lost
+   that race intermittently, leaving the incoming photo stuck invisible.
+   A keyframe animation has no such race: it always starts from its own
+   declared 0% state the instant the element mounts. */
+@keyframes amenity-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
   }
 }
 

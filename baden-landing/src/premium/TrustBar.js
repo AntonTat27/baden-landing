@@ -13,7 +13,7 @@ const STATS = [
 export default function TrustBar() {
   const { isRu } = useLanguage();
   return (
-    <section className="relative bg-baden-base border-b border-baden-line">
+    <section className="relative bg-baden-light border-b border-baden-line">
       <motion.div
         variants={stagger(0.1)}
         initial="hidden"
@@ -23,7 +23,7 @@ export default function TrustBar() {
       >
         {STATS.map((s, i) => (
           <motion.div key={i} variants={fadeUp} className="flex flex-col">
-            <span className="font-display text-4xl md:text-5xl text-baden-cream tracking-tight">
+            <span className="font-display text-4xl md:text-5xl text-baden-on-dark tracking-tight">
               <CountUp
                 to={s.to}
                 prefix={s.prefix || ''}

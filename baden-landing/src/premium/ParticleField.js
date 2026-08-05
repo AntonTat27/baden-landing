@@ -3,8 +3,8 @@ import * as THREE from 'three';
 import { useReducedMotion } from 'framer-motion';
 
 // Lightweight WebGL layer for the hero: slowly-rotating wireframe polyhedra
-// plus a few floating glass panes, lit in amber + terracotta over a
-// transparent canvas (the graded photo shows through). Reacts to the pointer
+// plus a few floating glass panes, lit in gold + pine over a transparent
+// canvas (the graded photo shows through). Reacts to the pointer
 // (parallax) and to scroll (gentle camera dolly). Fully torn down on unmount;
 // skipped entirely under prefers-reduced-motion.
 export default function ParticleField({ className = '' }) {
@@ -38,9 +38,9 @@ export default function ParticleField({ className = '' }) {
     // Wireframe polyhedra for explicit 3D depth
     const shards = new THREE.Group();
     const shardDefs = [
-      { geo: new THREE.IcosahedronGeometry(3.4, 0), color: '#e3b667', pos: [-9, 3, -4] },
-      { geo: new THREE.OctahedronGeometry(2.4, 0), color: '#c97a52', pos: [10, -3, -2] },
-      { geo: new THREE.DodecahedronGeometry(1.8, 0), color: '#3e6e72', pos: [6, 5, -8] },
+      { geo: new THREE.IcosahedronGeometry(3.4, 0), color: '#c99a4a', pos: [-9, 3, -4] },
+      { geo: new THREE.OctahedronGeometry(2.4, 0), color: '#6fae8c', pos: [10, -3, -2] },
+      { geo: new THREE.DodecahedronGeometry(1.8, 0), color: '#2f6b4f', pos: [6, 5, -8] },
       { geo: new THREE.TetrahedronGeometry(2.0, 0), color: '#b8863a', pos: [-8, -5, -6] },
     ];
     const meshes = shardDefs.map((d) => {
@@ -61,9 +61,9 @@ export default function ParticleField({ className = '' }) {
     // sparse (3 panes) and slow so it stays ambient, not busy.
     const glassGroup = new THREE.Group();
     const glassDefs = [
-      { w: 5.2, h: 3.2, color: '#e3b667', pos: [-7, -2, -10], rot: [0.3, 0.5, -0.1] },
-      { w: 4.2, h: 5.6, color: '#c97a52', pos: [9, 4, -13], rot: [-0.2, -0.6, 0.15] },
-      { w: 3.4, h: 3.4, color: '#f2e6d3', pos: [1, -6, -9], rot: [0.15, 0.2, 0.3] },
+      { w: 5.2, h: 3.2, color: '#c99a4a', pos: [-7, -2, -10], rot: [0.3, 0.5, -0.1] },
+      { w: 4.2, h: 5.6, color: '#6fae8c', pos: [9, 4, -13], rot: [-0.2, -0.6, 0.15] },
+      { w: 3.4, h: 3.4, color: '#f2ecdf', pos: [1, -6, -9], rot: [0.15, 0.2, 0.3] },
     ];
     const glassMeshes = glassDefs.map((d) => {
       const geoPane = new THREE.PlaneGeometry(d.w, d.h);

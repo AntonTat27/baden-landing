@@ -1,39 +1,87 @@
 <!DOCTYPE html>
+<!-- lang is set to `ru` as the document default because Russian is the primary
+     sales language. LanguageContext updates document.documentElement.lang when
+     the visitor switches to EN, so the declared language always matches what is
+     actually on screen. Previously this was hardcoded `ru` for both languages. -->
 <html lang="ru">
   <head>
     <meta charset="utf-8" />
     <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#0B0B0B" />
+    <!-- baden.dark (Coastal Ink), the actual ground the page opens on. -->
+    <meta name="theme-color" content="#132720" />
+
+    <title>Baden Premium Projects | Курортная резиденция в Турции</title>
     <meta
       name="description"
-      content="Baden Premium Projects — курортная резиденция в Турции. Владейте моментом, а не только метрами."
+      content="Резиденции на побережье Турции: покупка целиком, доля в собственности или таймшер. Вход от €5,000. Прозрачные документы, помощь с ВНЖ."
     />
+    <link rel="canonical" href="https://antontat27.github.io/baden-landing/" />
+
+    <!-- Bilingual signalling. The site serves both languages from one URL via a
+         client-side toggle, so x-default and both locales point at the same
+         document rather than at separate paths. -->
+    <link rel="alternate" hreflang="ru" href="https://antontat27.github.io/baden-landing/" />
+    <link rel="alternate" hreflang="en" href="https://antontat27.github.io/baden-landing/" />
+    <link rel="alternate" hreflang="x-default" href="https://antontat27.github.io/baden-landing/" />
+
+    <!-- Open Graph / Twitter. None of this existed before: a shared link
+         rendered as a bare URL with no title, image, or description, which
+         matters for a product sold largely through WhatsApp and Telegram. -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Baden Premium Projects" />
+    <meta property="og:locale" content="ru_RU" />
+    <meta property="og:locale:alternate" content="en_US" />
+    <meta property="og:url" content="https://antontat27.github.io/baden-landing/" />
+    <meta property="og:title" content="Baden Premium Projects | Курортная резиденция в Турции" />
+    <meta
+      property="og:description"
+      content="Резиденции на побережье Турции: покупка целиком, доля в собственности или таймшер. Вход от €5,000."
+    />
+    <!-- TODO: og-cover.jpg (1200x630) is not in public/ yet. Until it is added
+         the card falls back to a link preview with no image. -->
+    <meta property="og:image" content="https://antontat27.github.io/baden-landing/og-cover.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Резиденция Baden на побережье Турции" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Baden Premium Projects | Курортная резиденция в Турции" />
+    <meta
+      name="twitter:description"
+      content="Резиденции на побережье Турции: покупка целиком, доля в собственности или таймшер. Вход от €5,000."
+    />
+    <meta name="twitter:image" content="https://antontat27.github.io/baden-landing/og-cover.jpg" />
+
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
 
-    <!-- Fonts: display editorial serif (Fraunces), UI grotesk (Golos Text),
-         accent serif (Instrument Serif), body (General Sans via Fontshare) -->
+    <!-- TYPE: two families, both shipping the base cyrillic block (verified
+         against the live Google Fonts CSS2 API, not assumed).
+         Spectral for the editorial serif headline register (replacing
+         Playfair Display, whose ornamental high-contrast cut read as
+         resort-brochure script against the dark Coastal Night ground),
+         Onest stays for body and UI. -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..500&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400..900&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Onest:wght@300;400;500;600&family=Spectral:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&display=swap"
       rel="stylesheet"
     />
 
-    <title>Baden Premium Projects — Курортная резиденция в Турции</title>
+    <!-- Structured data. The organisation was previously invisible to
+         crawlers: the whole site is client-rendered and carried no JSON-LD,
+         no OG cards, and no per-route metadata. -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "RealEstateAgent",
+        "name": "Baden Premium Projects",
+        "url": "https://antontat27.github.io/baden-landing/",
+        "areaServed": { "@type": "Country", "name": "Turkey" },
+        "knowsLanguage": ["ru", "en"],
+        "description": "Резиденции на побережье Турции: покупка целиком, доля в собственности или таймшер."
+      }
+    </script>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>

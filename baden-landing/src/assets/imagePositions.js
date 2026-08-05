@@ -2,7 +2,11 @@
 // Unsplash License, https://unsplash.com/license) until the client supplies
 // real photography and renders for the site. Kept as hotlinked remote URLs
 // (not bundled) so they're trivial to swap out later.
-export const heroImg = 'https://images.unsplash.com/photo-1499678329028-101435549a4e?q=80&w=2400&auto=format&fit=crop';
+// Swapped for the new near-black + gold dark register — a warm, low-light
+// infinity-pool/dusk frame reads far better against `ink` (#0A1414) than the
+// previous cooler blue-hour shot did. Still a placeholder pending real
+// property photography.
+export const heroImg = 'https://images.unsplash.com/photo-1540541338287-41700207dee6?q=80&w=2400&auto=format&fit=crop';
 
 // Real amenity photography from Beyzade Resort's own site (beyzaderesort.com),
 // used here because Beyzade Hotel is a real listing. Hotlinked directly from

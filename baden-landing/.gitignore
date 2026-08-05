@@ -15,6 +15,11 @@
 /frame_review
 /build_*
 /*.log
+/buildlog.txt
+
+# local tool/IDE state, not project source
+/.claude
+/.impeccable
 
 # misc
 .DS_Store
