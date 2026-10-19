@@ -49,7 +49,7 @@ const CONTACTS = [
 
 const REASSURANCE = [
   { icon: ClockIcon, ru: 'Ответ в течение дня', en: 'Reply within a day' },
-  { icon: GlobeIcon, ru: 'Консультация на русском', en: 'Consultation in Russian' },
+  { icon: GlobeIcon, ru: 'Консультация на вашем языке', en: 'Consultation in your language' },
   { icon: ShieldIcon, ru: 'Без каких-либо обязательств', en: 'No obligation' },
 ];
 
@@ -130,8 +130,8 @@ export default function LeadSection() {
           </h2>
           <Reveal className="text-sm text-baden-on-dark/70 max-w-md leading-relaxed mb-8">
             {isRu
-              ? 'Оставьте контакт. Расскажем про форматы, цены по сезонам и оформление ТАПУ в коротком разговоре, на русском.'
-              : "Leave your contact. We'll walk you through formats, seasonal pricing, and the TAPU process in a short call."}
+              ? 'Оставьте контакт. Расскажем про форматы, цены по сезонам и оформление ТАПУ в коротком разговоре, на турецком, английском или русском.'
+              : "Leave your contact. We'll walk you through formats, seasonal pricing, and the TAPU process in a short call, in Turkish, English or Russian."}
           </Reveal>
 
           {/* Contact methods, as small icon cards rather than a plain list. */}

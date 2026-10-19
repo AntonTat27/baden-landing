@@ -59,15 +59,13 @@ const AUDIENCES = [
     ru: {
       tag: 'Переезд',
       title: 'Вид на жительство в Турции',
-      copy: 'Доля в недвижимости даёт доступный шаг к ВНЖ для вас и семьи, в разы дешевле полноценной покупки объекта.',
-      point: 'Путь к резиденции без покупки целой квартиры',
+      copy: 'Недвижимость даёт доступный шаг к ВНЖ для вас и вашей семьи.',
       tagline: 'Шаг ближе к жизни у моря',
     },
     en: {
       tag: 'Relocation',
       title: 'A path to Turkish residency',
-      copy: 'A registered share is an accessible route toward residence permits for you and your family, at a fraction of buying a whole property.',
-      point: 'Residency route without buying a whole apartment',
+      copy: 'Property is an accessible route toward residence permits for you and your family.',
       tagline: 'One step closer to a life by the sea',
     },
   },
@@ -79,14 +77,14 @@ const AUDIENCES = [
       title: 'Своё место у моря, каждый год',
       copy: 'Стабильная точка возвращения раз в год, без забот о содержании. Приезжаете, и всё готово к отдыху.',
       point: 'Гарантированные недели без аренды и хлопот',
-      tagline: 'Отпуск, который у вас не отнять',
+      tagline: 'Ваш отпуск всегда ждёт вас',
     },
     en: {
       tag: 'Leisure',
       title: 'Your place by the sea, every year',
       copy: 'A stable place to return to once a year, with none of the upkeep: you arrive, and everything is ready.',
       point: 'Guaranteed weeks, no renting, no upkeep',
-      tagline: 'The holiday nobody can take away',
+      tagline: 'Your holiday is always waiting for you',
     },
   },
 ];
@@ -133,12 +131,12 @@ function ScenarioList({ active, setActive, isRu }) {
                     <p className="text-sm md:text-base text-baden-ink/70 leading-relaxed mb-5">
                       {t.copy}
                     </p>
-                    <div className="flex items-start gap-3">
+                    {t.point && <div className="flex items-start gap-3">
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" className="h-5 w-5 shrink-0 mt-0.5 text-baden-brand-deep">
                         <path d="M20 6L9 17l-5-5" />
                       </svg>
                       <p className="text-sm text-baden-ink/80">{t.point}</p>
-                    </div>
+                    </div>}
                   </div>
                 </motion.div>
               )}
@@ -175,8 +173,8 @@ export default function Audiences() {
           </h2>
           <Reveal className="text-sm md:text-base text-baden-ink/70 max-w-xl leading-relaxed">
             {isRu
-              ? 'Собственники Baden приходят за разным. Выберите сценарий слева, и он раскроется здесь же.'
-              : 'Baden owners come for different reasons. Pick a scenario on the left and it opens right where it is.'}
+              ? 'Клиенты Baden приходят за разным. Выберите свой сценарий.'
+              : 'Baden clients come for different reasons. Pick your scenario.'}
           </Reveal>
         </div>
 

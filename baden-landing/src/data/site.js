@@ -74,7 +74,7 @@ export const HERO = {
   // must be corrected together.
   stats: [
     { ru: { l: 'Минимальный срок', v: '1 неделя' }, en: { l: 'Minimum term', v: '1 week' }, confirmed: false },
-    { ru: { l: 'Вход от', v: '€5,000' }, en: { l: 'Entry from', v: '€5,000' }, confirmed: false },
+    { ru: { l: 'Вход от', v: '€7,950' }, en: { l: 'Entry from', v: '€7,950' }, confirmed: false },
     { ru: { l: 'Объектов', v: '5' }, en: { l: 'Properties', v: '5' }, confirmed: true },
   ],
   primary: { ru: 'Оставить контакт', en: 'Leave your contact' },
@@ -175,8 +175,8 @@ export const AUDIENCES = [
   },
   {
     key: 'relocation',
-    ru: { tag: 'Переезд', title: 'Вид на жительство в Турции', copy: 'Доля в недвижимости — доступный шаг к ВНЖ для вас и семьи, в разы дешевле полноценной покупки объекта.', point: 'Путь к резиденции без покупки целой квартиры' },
-    en: { tag: 'Relocation', title: 'A path to Turkish residency', copy: 'A registered share is an accessible route toward residence permits for you and your family — at a fraction of buying a whole property.', point: 'Residency route without buying a whole apartment' },
+    ru: { tag: 'Переезд', title: 'Вид на жительство в Турции', copy: 'Недвижимость даёт доступный шаг к ВНЖ для вас и вашей семьи.' },
+    en: { tag: 'Relocation', title: 'A path to Turkish residency', copy: 'Property is an accessible route toward residence permits for you and your family.' },
   },
   {
     key: 'leisure',
@@ -190,8 +190,8 @@ export const AUDIENCES = [
 // ---------------------------------------------------------------------------
 export const TRUST = {
   claim: {
-    ru: 'Каждая сделка проходит через нотариуса и заканчивается ТАПУ на ваше имя.',
-    en: 'Every deal goes through a notary and ends with a TAPU registered in your name.',
+    ru: 'Полностью официальная сделка, оформляется ТАПУ на ваше имя.',
+    en: 'A fully official transaction, with a TAPU registered in your name.',
   },
   process: [
     { ru: 'Проверка объекта', en: 'Due diligence' },
@@ -252,8 +252,8 @@ export const DISCLAIMER = {
 export const LEAD = {
   title: { ru: ['Подберём резиденцию', 'под вашу цель'], en: ['Find the residence', 'for your goal'] },
   copy: {
-    ru: 'Оставьте контакт — расскажем про форматы, цены по сезонам и оформление ТАПУ в коротком разговоре, на русском.',
-    en: 'Leave your contact — we’ll walk you through the models, seasonal pricing, and TAPU registration in a short call.',
+    ru: 'Оставьте контакт — расскажем про форматы, цены по сезонам и оформление ТАПУ в коротком разговоре, на турецком, английском или русском.',
+    en: 'Leave your contact — we’ll walk you through the models, seasonal pricing, and TAPU registration in a short call, in Turkish, English or Russian.',
   },
   fields: [
     { id: 'name', ru: 'Имя', en: 'Name', type: 'text', ac: 'name', required: true },

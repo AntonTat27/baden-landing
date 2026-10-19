@@ -21,8 +21,8 @@ import { EASE } from './motion';
 // sections moved to the light ivory ground.
 const SECTIONS = [
   { id: 'amenities', ru: 'Резиденция', en: 'The residence', tone: 'dark' },
-  { id: 'properties', ru: 'Форматы', en: 'Formats', tone: 'light' },
-  { id: 'how-it-works', ru: 'Владение', en: 'Ownership', tone: 'dark' },
+  { id: 'how-it-works', ru: 'Форматы', en: 'Formats', tone: 'dark' },
+  { id: 'properties', ru: 'Резиденции', en: 'Residences', tone: 'light' },
   { id: 'audiences', ru: 'Кому подходит', en: 'Who it suits', tone: 'light' },
   { id: 'trust', ru: 'Документы', en: 'Documents', tone: 'light' },
   { id: 'contact', ru: 'Консультация', en: 'Consultation', tone: 'dark' },

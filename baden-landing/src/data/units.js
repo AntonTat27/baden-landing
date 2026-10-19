@@ -27,7 +27,7 @@ export const MONTHS = [
 // cost shown on the residence page). See OWNERSHIP_MODELS below for the
 // plain-language definition of each model.
 //
-// PLACEHOLDER FIGURES — entryFrom values (especially the €5,000 Beyzade
+// PLACEHOLDER FIGURES — entryFrom values (especially the €7,950 Beyzade
 // timeshare entry) are illustrative for the client call, not confirmed
 // pricing. Replace with real figures before this goes live.
 // Accent per model. One consistent 3-colour legend reused everywhere
@@ -42,8 +42,8 @@ export const MONTHS = [
 export const OWNERSHIP_MODELS = {
   full: {
     accent: 'full',
-    ru: { label: 'Полное владение', short: 'Полное владение', def: 'Объект целиком принадлежит вам. Без графика по неделям и без совладельцев.' },
-    en: { label: 'Full ownership', short: 'Full ownership', def: 'You own the whole property outright. No shared calendar, no co-owners.' },
+    ru: { label: 'Полное владение', short: 'Полное владение', def: 'Объект целиком принадлежит вам.' },
+    en: { label: 'Full ownership', short: 'Full ownership', def: 'You own the whole property outright.' },
   },
   fractional: {
     accent: 'fractional',
@@ -88,7 +88,7 @@ export const UNITS = [
     location: { ru: 'Аланья', en: 'Alanya' },
     image: HOTEL_IMG,
     ownership: ['timeshare'],
-    entryFrom: 5000,
+    entryFrom: 7950,
     prices: [10999, 10999, 10999, 14999, 18999, 21999, 24999, 24999, 21999, 18999, 14999, 10999],
     blurb: {
       ru: 'Семейный резорт в сердце Аланьи с бассейном для женщин, хамамом и мольбенной. Таймшер на определённые недели, самый доступный вход в портфель Baden.',

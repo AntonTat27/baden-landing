@@ -82,8 +82,8 @@ export default function LegalTrust() {
           <RevealLines
             lines={
               isRu
-                ? ['Каждая сделка проходит через нотариуса и заканчивается ТАПУ на ваше имя.']
-                : ['Every deal goes through a notary and ends with a TAPU registered in your name.']
+                ? ['Полностью официальная сделка, оформляется ТАПУ на ваше имя.']
+                : ['A fully official transaction, with a TAPU registered in your name.']
             }
           />
         </h2>

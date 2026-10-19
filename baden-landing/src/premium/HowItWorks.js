@@ -57,21 +57,21 @@ const MODEL_IMAGE = { full: VILLA_IMG, fractional: RESIDENCES_IMG, timeshare: HO
 const MODEL_DETAILS = {
   full: {
     ru: {
-      body: 'Резиденция становится вашей полностью, без выделенных недель и без совладельцев. Полный ТАПУ оформляется на ваше имя, а дом в вашем распоряжении круглый год.',
-      benefits: ['Единоличное владение, никаких графиков', 'Свободная продажа или передача по наследству', 'Доступен в любое время года'],
+      body: 'Резиденция становится вашей полностью. Недвижимость в вашем распоряжении круглый год.',
+      benefits: ['Единоличное владение.', 'Свободная продажа или передача по наследству', 'Доступен в любое время года'],
     },
     en: {
-      body: 'The residence becomes fully yours, with no shared calendar and no co-owners. A full TAPU is registered in your name, and the property is yours year-round.',
-      benefits: ['Sole ownership, no calendar to share', 'Free resale or inheritance', 'Available any time of year'],
+      body: 'The residence becomes fully yours. The property is at your disposal year-round.',
+      benefits: ['Sole ownership', 'Free resale or inheritance', 'Available any time of year'],
     },
   },
   fractional: {
     ru: {
-      body: 'Официально зарегистрированная доля в объекте: ТАПУ на ваше имя и собственные недели каждый год. Дешевле полной покупки, но с теми же правами: продать, передать, сдать.',
+      body: 'Официально зарегистрированная доля в объекте: ТАПУ на ваше имя и собственные недели каждый год. Дешевле полной покупки, но с теми же правами: продать, передать, сдать. Управление, клининг и сервис на месте уже включены.',
       benefits: ['ТАПУ на долю, официальное право собственности', 'Свои недели закреплены каждый год', 'Доход от аренды сезона + рост цены побережья'],
     },
     en: {
-      body: 'A legally registered share of the property: a title (TAPU) in your name, with set weeks every year. Cheaper than buying outright, with the same rights: sell it, pass it on, rent it out.',
+      body: 'A legally registered share of the property: a title (TAPU) in your name, with set weeks every year. Cheaper than buying outright, with the same rights: sell it, pass it on, rent it out. On-site management, cleaning, and service are already included.',
       benefits: ['A registered TAPU, real title rather than a contract', 'Your own weeks, locked in every year', 'Seasonal rental income + coastal appreciation'],
     },
   },
@@ -177,7 +177,7 @@ export default function HowItWorks() {
   return (
     <section
       id="how-it-works"
-      className="relative bg-baden-dark border-t border-baden-line py-28 md:py-36 overflow-hidden"
+      className="relative bg-baden-dark pt-28 md:pt-36 pb-20 md:pb-28 overflow-hidden"
     >
       {/* Large, heavily darkened resort photo as ambient texture rather than
           a flat panel — barely visible, reads as atmosphere, not a picture. */}
@@ -216,7 +216,7 @@ export default function HowItWorks() {
         <h2 className="font-display font-light text-3xl md:text-5xl text-baden-on-dark leading-[1.06] tracking-[-0.02em] mb-6">
           <RevealLines
             className="items-center"
-            lines={isRu ? ['Три способа', <>владеть <span className="font-medium">недвижимостью</span></>] : ['Three ways', <>to own <span className="font-medium">real estate</span></>]}
+            lines={isRu ? ['Три формата', <>владения <span className="font-medium">недвижимостью</span></>] : ['Three formats', <>of owning <span className="font-medium">real estate</span></>]}
           />
         </h2>
         <Reveal className="text-sm md:text-base text-baden-on-dark/70 leading-relaxed max-w-md mx-auto">

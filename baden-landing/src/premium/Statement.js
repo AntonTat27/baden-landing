@@ -1,5 +1,6 @@
 import React from 'react';
 import { useLanguage } from '../context/LanguageContext';
+import { UNITS } from '../data/units';
 import { Reveal } from './motion';
 
 // A quiet band between the hero and the amenities showcase — both full-bleed
@@ -24,7 +25,7 @@ export default function Statement() {
   const { isRu } = useLanguage();
 
   const facts = [
-    { value: '5', label: isRu ? 'Резиденций' : 'Residences' },
+    { value: String(UNITS.length), label: isRu ? 'Резиденций' : 'Residences' },
     { value: '3', label: isRu ? 'Формата владения' : 'Ownership formats' },
     { value: '1', label: isRu ? 'Побережье' : 'Coastline' },
   ];
