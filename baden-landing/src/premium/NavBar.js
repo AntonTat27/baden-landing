@@ -5,8 +5,7 @@ import { EASE } from './motion';
 
 const LINKS = [
   { id: 'amenities', ru: 'Резиденция', en: 'The residence' },
-  { id: 'properties', ru: 'Форматы', en: 'Formats' },
-  { id: 'how-it-works', ru: 'Как это работает', en: 'How it works' },
+  { id: 'how-it-works', ru: 'Форматы', en: 'Formats' },
   { id: 'audiences', ru: 'Кому подходит', en: 'Who it suits' },
   { id: 'trust', ru: 'Документы', en: 'Docs' },
   { id: 'contact', ru: 'Контакты', en: 'Contact' },

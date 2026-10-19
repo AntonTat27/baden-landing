@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { UNITS, OWNERSHIP_MODELS, minPrice, formatEUR } from '../data/units';
 import { positionFor } from '../assets/imagePositions';
 import { useLanguage } from '../context/LanguageContext';
+import { plural } from '../data/site';
 import { Reveal, RevealLines, fadeUp } from './motion';
 
 // THE LISTINGS SECTION, BACK TO CARDS
@@ -279,12 +280,11 @@ export default function Properties() {
   };
 
   return (
-    // RHYTHM: py-20/py-28 here against HowItWorks' py-28/py-36 below. The
-    // lightest, whitest surface on the page — this is the shopfront, and the
-    // brief specifically asked for it to read as light/whitish rather than
-    // one more dark panel between two dark photo sections (Amenities above,
-    // HowItWorks below).
-    <section id="properties" className="relative bg-baden-ivory py-20 md:py-28 overflow-hidden border-t border-baden-ink-line">
+    // RHYTHM: the second half of the "Formats" block, directly under
+    // HowItWorks (dark) with no hairline between them. The lightest, whitest
+    // surface on the page — this is the shopfront, and the brief specifically
+    // asked for it to read as light/whitish rather than one more dark panel.
+    <section id="properties" className="relative bg-baden-ivory py-20 md:py-28 overflow-hidden">
       {/* Ambient depth. A single disc at blur-[60px]: past roughly 60px the
           result is visually indistinguishable from a smaller radius on a
           larger, fainter disc, while costing strictly more to composite on
@@ -306,8 +306,8 @@ export default function Properties() {
               className="mt-5 text-sm md:text-base text-baden-ink/65 leading-relaxed max-w-md"
             >
               {isRu
-                ? 'Пять объектов на разных участках побережья. Цвет метки показывает, как продаётся каждый.'
-                : 'Five properties along different stretches of coast. The marker colour shows how each one is sold.'}
+                ? 'Пять объектов на разных участках побережья. Цвет метки показывает формат владения.'
+                : 'Five properties along different stretches of coast. The marker colour shows the ownership format.'}
             </Reveal>
           </div>
           {/* Scroll controls, desktop only — mobile relies on the swipe
@@ -329,7 +329,7 @@ export default function Properties() {
           <div className="flex items-baseline gap-2 text-baden-ink/55">
             <span className="font-display text-lg text-baden-ink tabular-nums">{filtered.length}</span>
             <span className="text-[11px] tracking-widest2 uppercase">
-              {isRu ? (filtered.length === 1 ? 'объект' : 'объектов') : filtered.length === 1 ? 'residence' : 'residences'}
+              {plural(filtered.length, { ru: ['объект', 'объекта', 'объектов'], en: ['residence', 'residences'] }, isRu).replace(/^\d+ /, '')}
             </span>
             <span className="text-baden-ink/25">·</span>
             <span className="text-[11px] tracking-widest2 uppercase">

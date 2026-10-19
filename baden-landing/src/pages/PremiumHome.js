@@ -15,8 +15,8 @@ import Faq from '../premium/Faq';
 import StickyRecapBar from '../premium/StickyRecapBar';
 
 // The premium single-page experience. Ordered as a narrative:
-// establish (hero) → desire (amenities) → choose (properties) → understand
-// (how it works) → self-identify (audiences) → trust (legal + documents) →
+// establish (hero) → desire (amenities) → understand (ownership formats) →
+// choose (properties) → self-identify (audiences) → trust (legal + documents) →
 // act (lead form) → reference (FAQ, last on purpose, kept out of the way of
 // the conversion flow above).
 //
@@ -63,8 +63,10 @@ export default function PremiumHome() {
       </div>
       <SectionRail />
       <Amenities />
-      <Properties />
+      {/* One "Formats" block: the three ownership formats first, then the
+          residences sold under them — no seam between, one nav entry. */}
       <HowItWorks />
+      <Properties />
       <Audiences />
       {/* Audiences and LegalTrust are the one pair of adjacent sections
           that share a surface tone (both baden-ivory) — an explicit seam

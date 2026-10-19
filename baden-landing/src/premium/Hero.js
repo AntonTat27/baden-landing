@@ -5,6 +5,7 @@ import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion
 // photography before go-live.
 import heroPoster from '../assets/posters/hero-placeholder.jpg';
 import { useLanguage } from '../context/LanguageContext';
+import { UNITS, formatEUR } from '../data/units';
 import { EASE, stagger } from './motion';
 
 // Slow, warm light drifting across the backdrop — soft blurred glows in
@@ -122,9 +123,9 @@ export default function Hero({ parallaxRef }) {
   // visitor checks the headline's promise against, plus the portfolio size,
   // read as a single line rather than boxed into separate cards.
   const facts = [
-    { label: isRu ? 'Вход от' : 'Entry from', value: '€5,000' },
+    { label: isRu ? 'Вход от' : 'Entry from', value: formatEUR(Math.min(...UNITS.map((u) => u.entryFrom))) },
     { label: isRu ? 'Минимальный срок' : 'Minimum term', value: isRu ? '1 неделя' : '1 week' },
-    { label: isRu ? 'Резиденций' : 'Residences', value: '5' },
+    { label: isRu ? 'Резиденций' : 'Residences', value: String(UNITS.length) },
   ];
 
   return (
