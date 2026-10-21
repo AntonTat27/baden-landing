@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { AnimatePresence, motion, useReducedMotion, useScroll, useMotionValueEvent } from 'framer-motion';
 import { useLanguage } from '../context/LanguageContext';
-import { UNITS, formatEUR } from '../data/units';
+import { formatEUR } from '../data/units';
+import { useUnits } from '../context/UnitsContext';
 import { EASE } from './motion';
 
 // Mobile-only sticky recap bar (guide §10): a mobile visitor loses the
@@ -12,10 +13,10 @@ import { EASE } from './motion';
 // desktop navbar already keeps a persistent CTA visible).
 
 // Cheapest entry across the whole portfolio — the honest "from" hook.
-const FROM = Math.min(...UNITS.map((u) => u.entryFrom));
 
 export default function StickyRecapBar() {
   const { isRu } = useLanguage();
+  const FROM = Math.min(...useUnits().units.map((u) => u.entryFrom));
   const reduce = useReducedMotion();
   const [visible, setVisible] = useState(false);
 

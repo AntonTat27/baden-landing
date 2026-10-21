@@ -1,0 +1,208 @@
+[
+  {
+    "id": "villa-aurelia",
+    "name": {
+      "ru": "Вилла Aurelia",
+      "en": "Villa Aurelia"
+    },
+    "type": {
+      "ru": "Вилла",
+      "en": "Villa"
+    },
+    "bedrooms": 4,
+    "size": "210 m² · сад 600 m²",
+    "guests": "4–8",
+    "location": {
+      "ru": "Бодрум",
+      "en": "Bodrum"
+    },
+    "image": "https://images.unsplash.com/photo-1756887406085-a689fbc8af33?q=80&w=2000&auto=format&fit=crop",
+    "ownership": [
+      "full"
+    ],
+    "entryFrom": 420000,
+    "prices": [
+      8999,
+      8999,
+      8999,
+      12999,
+      15999,
+      17999,
+      20999,
+      20999,
+      18999,
+      15999,
+      12999,
+      8999
+    ],
+    "blurb": {
+      "ru": "Частная вилла на холме с видом на залив. Собственный сад, терраса и ощущение полностью личного дома. Продаётся целиком, в полную собственность.",
+      "en": "A private hillside villa above the bay, with its own garden, terrace, and the feel of a fully personal home. Sold outright, full ownership only."
+    }
+  },
+  {
+    "id": "beyzade-hotel",
+    "name": {
+      "ru": "Beyzade Resort",
+      "en": "Beyzade Resort"
+    },
+    "type": {
+      "ru": "Резорт/Отель",
+      "en": "Resort/Hotel"
+    },
+    "bedrooms": 2,
+    "size": "Семейный резорт · концепция халяль",
+    "guests": "2–6",
+    "location": {
+      "ru": "Аланья",
+      "en": "Alanya"
+    },
+    "image": "https://www.beyzaderesort.com/wp-content/uploads/2025/08/ana-foto-new-2048x2048.jpg",
+    "ownership": [
+      "timeshare"
+    ],
+    "entryFrom": 5000,
+    "prices": [
+      10999,
+      10999,
+      10999,
+      14999,
+      18999,
+      21999,
+      24999,
+      24999,
+      21999,
+      18999,
+      14999,
+      10999
+    ],
+    "blurb": {
+      "ru": "Семейный резорт в сердце Аланьи с бассейном для женщин, хамамом и мольбенной. Таймшер на определённые недели, самый доступный вход в портфель Baden.",
+      "en": "A family resort in the heart of Alanya with a women-only pool, a hamam, and a prayer room. Sold as timeshare weeks, the most accessible entry point in the Baden portfolio."
+    }
+  },
+  {
+    "id": "cape-lagoon-resort",
+    "name": {
+      "ru": "Cape Lagoon Resort",
+      "en": "Cape Lagoon Resort"
+    },
+    "type": {
+      "ru": "Резорт/Отель",
+      "en": "Resort/Hotel"
+    },
+    "bedrooms": 3,
+    "size": "Резорт · 4.2 га",
+    "guests": "2–6",
+    "location": {
+      "ru": "Фетхие",
+      "en": "Fethiye"
+    },
+    "image": "https://images.unsplash.com/photo-1503461007167-0e27f216b896?q=80&w=2000&auto=format&fit=crop",
+    "ownership": [
+      "fractional"
+    ],
+    "entryFrom": 32000,
+    "prices": [
+      9999,
+      9999,
+      9999,
+      13999,
+      16999,
+      18999,
+      21999,
+      21999,
+      18999,
+      16999,
+      13999,
+      9999
+    ],
+    "blurb": {
+      "ru": "Лагунный курорт с прямым выходом к воде и собственным пляжным клубом. Доля в объекте оформляется как ТАПУ на ваше имя.",
+      "en": "A lagoon-front resort with direct water access and its own beach club. Sold as a fractional share, with a title (TAPU) in your name."
+    }
+  },
+  {
+    "id": "marea-residences",
+    "name": {
+      "ru": "Marea Residences",
+      "en": "Marea Residences"
+    },
+    "type": {
+      "ru": "Апартаменты/Резиденции",
+      "en": "Apartment/Residences"
+    },
+    "bedrooms": 3,
+    "size": "Резиденции · 14 домов",
+    "guests": "2–8",
+    "location": {
+      "ru": "Чешме",
+      "en": "Çeşme"
+    },
+    "image": "https://images.unsplash.com/photo-1680197705024-3922023398d8?q=80&w=2000&auto=format&fit=crop",
+    "ownership": [
+      "fractional",
+      "full"
+    ],
+    "entryFrom": 45000,
+    "prices": [
+      11999,
+      11999,
+      11999,
+      16999,
+      19999,
+      21999,
+      23999,
+      23999,
+      21999,
+      19999,
+      16999,
+      11999
+    ],
+    "blurb": {
+      "ru": "Современный комплекс приморских резиденций: архитектура, обращённая к морю, и общий бассейн-инфинити. Доступны и доля, и полная покупка отдельного дома.",
+      "en": "A modern seafront residence complex: architecture that faces the water, with a shared infinity pool. Available as either a fractional share or a full purchase of a single home."
+    }
+  },
+  {
+    "id": "the-water-villas",
+    "name": {
+      "ru": "The Water Villas",
+      "en": "The Water Villas"
+    },
+    "type": {
+      "ru": "Вилла на воде",
+      "en": "Water Villa"
+    },
+    "bedrooms": 5,
+    "size": "340 m² · над водой",
+    "guests": "4–10",
+    "location": {
+      "ru": "Анталья",
+      "en": "Antalya"
+    },
+    "image": "https://images.unsplash.com/photo-1470214203634-e436a8848e23?q=80&w=2000&auto=format&fit=crop",
+    "ownership": [
+      "fractional"
+    ],
+    "entryFrom": 68000,
+    "prices": [
+      15999,
+      15999,
+      15999,
+      22999,
+      27999,
+      30999,
+      34999,
+      34999,
+      30999,
+      27999,
+      22999,
+      15999
+    ],
+    "blurb": {
+      "ru": "Флагман портфеля: виллы на сваях над лагуной, самые большие площади и прямой спуск к воде с террасы. Доля в объекте оформляется как ТАПУ на ваше имя.",
+      "en": "The flagship of the portfolio: villas raised over the lagoon, the largest footprints, and a private ladder down to the water. Sold as a fractional share, with a title (TAPU) in your name."
+    }
+  }
+]

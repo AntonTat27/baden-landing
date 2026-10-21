@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useParams, Link, Navigate } from 'react-router-dom';
-import { getUnitById, OWNERSHIP_MODELS, MONTHS, formatEUR } from '../data/units';
+import { OWNERSHIP_MODELS, MONTHS, formatEUR } from '../data/units';
+import { useUnits } from '../context/UnitsContext';
 import { positionFor } from '../assets/imagePositions';
 import { useLanguage } from '../context/LanguageContext';
 import { Reveal, RevealLines } from '../premium/motion';
@@ -37,7 +38,8 @@ const WEEKS_IN_YEAR = 52;
 export default function ResidenceDetail() {
   const { id } = useParams();
   const { isRu } = useLanguage();
-  const unit = getUnitById(id);
+  const { units, ready } = useUnits();
+  const unit = units.find((u) => u.id === id);
 
   // A one-week default stay, starting "now" on the 52-week ring.
   const [range, setRange] = useState(() => {
@@ -76,6 +78,7 @@ export default function ResidenceDetail() {
   }, [startWeek, monthStarts]);
 
   if (!unit) {
+    if (!ready) return null;
     return <Navigate to="/" replace />;
   }
 

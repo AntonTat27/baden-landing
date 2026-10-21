@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Baden Admin</title>
+<style>
+  :root { --bg:#f6f5f1; --panel:#fff; --ink:#14201f; --muted:#6b7472; --line:#e2e0d9; --brand:#1f4fd1; --danger:#c0392b; }
+  * { box-sizing: border-box; }
+  body { margin:0; font:15px/1.5 system-ui, sans-serif; background:var(--bg); color:var(--ink); }
+  main { max-width:1100px; margin:0 auto; padding:24px 16px 64px; }
+  h1 { font-size:22px; margin:0 0 20px; }
+  h2 { font-size:17px; margin:0 0 16px; }
+  .panel { background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:20px; margin-bottom:24px; }
+  .listing { display:flex; gap:14px; align-items:center; padding:10px 0; border-top:1px solid var(--line); }
+  .listing:first-child { border-top:0; }
+  .listing img { width:72px; height:54px; object-fit:cover; border-radius:6px; background:var(--line); }
+  .listing .meta { flex:1; min-width:0; }
+  .listing .meta small { color:var(--muted); }
+  .grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:14px; }
+  label { display:flex; flex-direction:column; gap:4px; font-size:13px; color:var(--muted); }
+  input, textarea { font:inherit; color:var(--ink); padding:8px 10px; border:1px solid var(--line); border-radius:6px; background:#fff; }
+  textarea { min-height:80px; resize:vertical; }
+  fieldset { border:1px solid var(--line); border-radius:8px; margin:16px 0 0; padding:12px 14px; }
+  legend { font-size:13px; color:var(--muted); padding:0 4px; }
+  .checks { display:flex; gap:18px; flex-wrap:wrap; }
+  .checks label { flex-direction:row; align-items:center; color:var(--ink); font-size:14px; }
+  .prices { display:grid; grid-template-columns:repeat(auto-fit, minmax(90px, 1fr)); gap:8px; }
+  .prices input { width:100%; }
+  button { font:inherit; cursor:pointer; border-radius:6px; padding:8px 14px; border:1px solid var(--line); background:#fff; color:var(--ink); }
+  button.primary { background:var(--brand); border-color:var(--brand); color:#fff; }
+  button.danger { color:var(--danger); }
+  .actions { display:flex; gap:10px; margin-top:18px; align-items:center; flex-wrap:wrap; }
+  #msg { font-size:14px; }
+  #msg.err { color:var(--danger); }
+  #preview { max-width:220px; max-height:140px; border-radius:6px; margin-top:8px; display:none; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Baden — listings</h1>
+
+  <section class="panel">
+    <h2>Current listings</h2>
+    <div id="list">Loading…</div>
+  </section>
+
+  <section class="panel">
+    <h2 id="formTitle">New listing</h2>
+    <form id="form">
+      <div class="grid">
+        <label>Name (EN) *<input name="name.en" required></label>
+        <label>Name (RU) *<input name="name.ru" required></label>
+        <label>ID (slug, auto from EN name if empty)<input name="id" pattern="[a-z0-9]+(-[a-z0-9]+)*"></label>
+        <label>Type (EN)<input name="type.en" placeholder="Villa"></label>
+        <label>Type (RU)<input name="type.ru" placeholder="Вилла"></label>
+        <label>Location (EN)<input name="location.en"></label>
+        <label>Location (RU)<input name="location.ru"></label>
+        <label>Bedrooms<input name="bedrooms" type="number" min="0" value="2"></label>
+        <label>Guests<input name="guests" placeholder="2–6"></label>
+        <label>Size<input name="size" placeholder="210 m²"></label>
+        <label>Entry price from (€) *<input name="entryFrom" type="number" min="1" required></label>
+      </div>
+
+      <fieldset>
+        <legend>Ownership models *</legend>
+        <div class="checks">
+          <label><input type="checkbox" name="ownership" value="full"> Full ownership</label>
+          <label><input type="checkbox" name="ownership" value="fractional"> Fractional</label>
+          <label><input type="checkbox" name="ownership" value="timeshare"> Timeshare</label>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Image *</legend>
+        <div class="grid">
+          <label>Image URL<input name="image" required></label>
+          <label>…or upload a file<input type="file" id="file" accept="image/jpeg,image/png,image/webp,image/gif"></label>
+        </div>
+        <img id="preview" alt="">
+      </fieldset>
+
+      <fieldset>
+        <legend>Monthly usage prices, € (Jan → Dec) *</legend>
+        <div class="prices" id="prices"></div>
+      </fieldset>
+
+      <div class="grid" style="margin-top:16px">
+        <label>Description (EN)<textarea name="blurb.en"></textarea></label>
+        <label>Description (RU)<textarea name="blurb.ru"></textarea></label>
+      </div>
+
+      <div class="actions">
+        <button class="primary" type="submit">Save</button>
+        <button type="button" id="cancel">Clear / new</button>
+        <span id="msg"></span>
+      </div>
+    </form>
+  </section>
+</main>
+
+<script>
+const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const form = document.getElementById('form');
+const msg = document.getElementById('msg');
+const preview = document.getElementById('preview');
+let listings = [];
+let editingId = null;
+
+document.getElementById('prices').innerHTML = MONTHS.map((m, i) =>
+  `<label>${m}<input type="number" min="0" name="price${i}" required></label>`).join('');
+
+const say = (text, err) => { msg.textContent = text; msg.className = err ? 'err' : ''; };
+const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
+const field = (n) => form.elements[n];
+
+function showPreview(url) {
+  preview.src = url || '';
+  preview.style.display = url ? 'block' : 'none';
+}
+field('image').addEventListener('input', (e) => showPreview(e.target.value));
+
+async function api(method, url, body) {
+  // Resolve against origin: a page opened as user:pass@host can't fetch relative URLs.
+  const res = await fetch(new URL(url, location.origin), {
+    method,
+    headers: body instanceof FormData ? {} : { 'Content-Type': 'application/json' },
+    body: body instanceof FormData ? body : body && JSON.stringify(body),
+  });
+  if (!res.ok) throw new Error((await res.text()).trim() || res.statusText);
+  return res.status === 204 ? null : res.json();
+}
+
+async function load() {
+  listings = await api('GET', '/api/listings');
+  document.getElementById('list').innerHTML = listings.length ? listings.map((l) => `
+    <div class="listing">
+      <img src="${esc(l.image)}" alt="">
+      <div class="meta"><strong>${esc(l.name.en)}</strong> <small>· ${esc(l.location.en)} · ${esc(l.ownership.join(', '))} · from €${l.entryFrom.toLocaleString('de-DE')}</small></div>
+      <button data-edit="${esc(l.id)}">Edit</button>
+      <button class="danger" data-del="${esc(l.id)}">Delete</button>
+    </div>`).join('') : '<p>No listings yet.</p>';
+}
+
+document.getElementById('list').addEventListener('click', async (e) => {
+  const editId = e.target.dataset.edit;
+  const delId = e.target.dataset.del;
+  if (editId) fill(listings.find((l) => l.id === editId));
+  if (delId && confirm(`Delete "${delId}"? This removes it from the landing page.`)) {
+    try { await api('DELETE', `/api/listings/${encodeURIComponent(delId)}`); if (editingId === delId) reset(); await load(); say('Deleted.'); }
+    catch (err) { say(err.message, true); }
+  }
+});
+
+function fill(l) {
+  editingId = l.id;
+  document.getElementById('formTitle').textContent = `Edit: ${l.name.en}`;
+  for (const k of ['id','bedrooms','guests','size','entryFrom','image']) field(k).value = l[k] ?? '';
+  for (const k of ['name','type','location','blurb']) for (const lang of ['en','ru']) field(`${k}.${lang}`).value = l[k]?.[lang] ?? '';
+  form.querySelectorAll('[name=ownership]').forEach((c) => { c.checked = l.ownership.includes(c.value); });
+  l.prices.forEach((p, i) => { field(`price${i}`).value = p; });
+  showPreview(l.image);
+  say('');
+  form.scrollIntoView({ behavior: 'smooth' });
+}
+
+function reset() {
+  editingId = null;
+  form.reset();
+  document.getElementById('formTitle').textContent = 'New listing';
+  showPreview('');
+}
+document.getElementById('cancel').addEventListener('click', () => { reset(); say(''); });
+
+document.getElementById('file').addEventListener('change', async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const fd = new FormData();
+  fd.append('file', file);
+  say('Uploading…');
+  try {
+    const { url } = await api('POST', '/api/uploads', fd);
+    field('image').value = url;
+    showPreview(url);
+    say('Image uploaded.');
+  } catch (err) { say(err.message, true); }
+});
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const v = (n) => field(n).value.trim();
+  const i18n = (k) => ({ en: v(`${k}.en`), ru: v(`${k}.ru`) });
+  const ownership = [...form.querySelectorAll('[name=ownership]:checked')].map((c) => c.value);
+  if (!ownership.length) return say('Pick at least one ownership model.', true);
+  const body = {
+    id: v('id'),
+    name: i18n('name'), type: i18n('type'), location: i18n('location'), blurb: i18n('blurb'),
+    bedrooms: Number(v('bedrooms')) || 0,
+    guests: v('guests'), size: v('size'), image: v('image'),
+    ownership,
+    entryFrom: Number(v('entryFrom')),
+    prices: MONTHS.map((_, i) => Number(v(`price${i}`))),
+  };
+  try {
+    if (editingId) await api('PUT', `/api/listings/${encodeURIComponent(editingId)}`, body);
+    else await api('POST', '/api/listings', body);
+    reset();
+    await load();
+    say('Saved — live on the landing page.');
+  } catch (err) { say(err.message, true); }
+});
+
+load().catch((err) => say(err.message, true));
+</script>
+</body>
+</html>

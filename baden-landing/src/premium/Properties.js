@@ -1,7 +1,8 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { UNITS, OWNERSHIP_MODELS, minPrice, formatEUR } from '../data/units';
+import { OWNERSHIP_MODELS, formatEUR } from '../data/units';
+import { useUnits } from '../context/UnitsContext';
 import { positionFor } from '../assets/imagePositions';
 import { useLanguage } from '../context/LanguageContext';
 import { plural } from '../data/site';
@@ -228,6 +229,7 @@ function FormatFilter({ value, onChange, isRu }) {
 
 export default function Properties() {
   const { isRu } = useLanguage();
+  const { units: UNITS } = useUnits();
   const [filter, setFilter] = useState('all');
 
   const railRef = useRef(null);
@@ -306,8 +308,8 @@ export default function Properties() {
               className="mt-5 text-sm md:text-base text-baden-ink/65 leading-relaxed max-w-md"
             >
               {isRu
-                ? 'Пять объектов на разных участках побережья. Цвет метки показывает формат владения.'
-                : 'Five properties along different stretches of coast. The marker colour shows the ownership format.'}
+                ? 'Объекты на разных участках побережья. Цвет метки показывает, как продаётся каждый.'
+                : 'Properties along different stretches of coast. The marker colour shows how each one is sold.'}
             </Reveal>
           </div>
           {/* Scroll controls, desktop only — mobile relies on the swipe

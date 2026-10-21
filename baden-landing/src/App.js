@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useParams, Outlet } from 'react-router-dom';
 import { LanguageProvider } from './context/LanguageContext';
+import { UnitsProvider } from './context/UnitsContext';
 import NavBar from './premium/NavBar';
 import Footer from './premium/Footer';
 import PremiumHome from './pages/PremiumHome';
@@ -23,6 +24,7 @@ function PremiumLayout() {
 function App() {
   return (
     <LanguageProvider>
+      <UnitsProvider>
       {/* PUBLIC_URL basename keeps routing correct under the GitHub Pages subpath */}
       <BrowserRouter basename={process.env.PUBLIC_URL}>
         <Routes>
@@ -34,6 +36,7 @@ function App() {
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </BrowserRouter>
+      </UnitsProvider>
     </LanguageProvider>
   );
 }
