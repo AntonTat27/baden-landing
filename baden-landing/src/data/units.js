@@ -148,14 +148,6 @@ export const UNITS = [
   },
 ];
 
-export function minPrice(unit) {
-  return Math.min(...unit.prices);
-}
-
 export function formatEUR(value) {
   return `€${value.toLocaleString('de-DE')}`;
-}
-
-export function getUnitById(id) {
-  return UNITS.find((u) => u.id === id);
 }

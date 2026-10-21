@@ -1,7 +1,8 @@
 import React, { useRef, useState } from 'react';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { EASE } from './motion';
-import { UNITS, formatEUR } from '../data/units';
+import { formatEUR } from '../data/units';
+import { useUnits } from '../context/UnitsContext';
 
 // Spring used for the hover "pop" on an individual wedge/tick — deliberately
 // stiffer/lighter than the entrance spring below, so a hover reads as an
@@ -114,6 +115,7 @@ export default function OwnershipVisualizer({
   const reduce = useReducedMotion();
   const svgRef = useRef(null);
   const [hoverIdx, setHoverIdx] = useState(null);
+  const { units } = useUnits();
   // Which handle ('start' | 'end' | null) is currently being dragged. Kept
   // as state (for the visual grow-on-drag effect) AND mirrored into a ref
   // (see dragHandleRef below) — the window-level pointermove listener needs
@@ -141,9 +143,9 @@ export default function OwnershipVisualizer({
   rangeValueRef.current = [rangeStart, rangeEnd];
   const accentHex = ACCENT_HEX[model];
   // Live "from" price for whichever units actually sell under this model —
-  // real data (UNITS.entryFrom), not an invented figure, same discipline as
+  // real data (units' entryFrom), not an invented figure, same discipline as
   // the rest of the page.
-  const modelUnits = UNITS.filter((u) => u.ownership.includes(model));
+  const modelUnits = units.filter((u) => u.ownership.includes(model));
   const fromPrice = modelUnits.length ? Math.min(...modelUnits.map((u) => u.entryFrom)) : null;
   const { line: LINE_HEX, dimFill: DIM_FILL, dimStroke: DIM_STROKE } = NEUTRALS;
   const onSurfaceText = 'text-baden-on-dark/70';
